@@ -1,8 +1,9 @@
-const [profile, setProfile] = useState(
+const [user, setUser] = useState(
    {
      username: "",
      password: "",
      stats: null,
+     description: "",
    }
  );
 
