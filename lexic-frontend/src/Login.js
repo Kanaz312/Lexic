@@ -1,6 +1,6 @@
-import React from 'react';
+import React from "react";
 
-function Login(){
+function Login() {
   return (
     <div className="Login">
       <form>
@@ -19,7 +19,7 @@ function Login(){
         <input type="submit" value="Submit" />
       </form>
     </div>
-  )
+  );
 }
 
 export default Login;
