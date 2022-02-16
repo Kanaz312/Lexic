@@ -9,15 +9,15 @@ dotenv.config();
 
 mongoose
   .connect(
-    //"mongodb+srv://" +
-    //  process.env.MONGO_USER +
-    //  ":" +
-    //  process.env.MONGO_PWD +
-    //  "@cluster0.6f9re.mongodb.net/" +
-    //  process.env.MONGO_DB +
-    //  "?retryWrites=true&w=majority",
+    "mongodb+srv://" +
+     process.env.MONGO_USER +
+     ":" +
+     process.env.MONGO_PWD +
+     "@ourcluster.mr5hf.mongodb.net/" +
+     process.env.MONGO_DB +
+      "?retryWrites=true&w=majority",
     // "mongodb://localhost:27017/users",
-    "mongodb+srv://lexic:calpolylexic@ourcluster.mr5hf.mongodb.net/Lexic?retryWrites=true&w=majority",
+    //"mongodb+srv://lexic:calpolylexic@ourcluster.mr5hf.mongodb.net/Lexic?retryWrites=true&w=majority",
     {
       useNewUrlParser: true, //useFindAndModify: false,
       useUnifiedTopology: true,
