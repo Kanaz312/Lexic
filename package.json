@@ -6,7 +6,7 @@
   "scripts": {
     "frontend": "cd lexic-frontend && npm start",
     "backend": "cd lexic-backend && node backend.js",
-    "dev": "concurrently --kill-others-on-fail \"npm run backend\" \"npm run frontend\"",
+    "dev": "npm run backend  && npm run frontend",
     "heroku-postbuild": "cd frontend && npm install && npm run build"
   },
   "repository": {
