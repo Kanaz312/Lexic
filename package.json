@@ -7,7 +7,7 @@
     "frontend": "cd lexic-frontend && npm start",
     "backend": "cd lexic-backend && node backend.js",
     "dev": "npm run backend  && npm run frontend",
-    "heroku-postbuild": "cd lexic-frontend && npm install && npm run build"
+    "heroku-postbuild": "cd lexic-backend && npm install && cd ../lexic-frontend && npm install && npm run build"
   },
   "repository": {
     "type": "git",
