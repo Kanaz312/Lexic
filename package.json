@@ -1,0 +1,22 @@
+{
+  "name": "lexic",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "frontend": "cd lexic-frontend && npm start",
+    "backend": "cd lexic-backend && nodemon backend.js",
+    "dev": "concurrently --kill-others-on-fail \"npm run backend\" \"npm run frontend\"",
+     "heroku-postbuild": "cd frontend && npm install && npm run build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Kanaz312/Lexic.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Kanaz312/Lexic/issues"
+  },
+  "homepage": "https://github.com/Kanaz312/Lexic#readme"
+}
