@@ -11,6 +11,7 @@ const port = 1000;
 app.use(cors());
 app.use(express.json());
 
+
 app.get("/", (req, res) => {
   res.send("Hello World!");
 });
@@ -120,7 +121,5 @@ async function updateUser(id, updatedUser) {
 }
 
 app.listen(process.env.PORT || port, () => {
-  if (process.env.PORT)
-    console.log(`REST API is listening on port: ${process.env.PORT}.`);
-  else console.log(`REST API is listening on port: ${port}.`);
-});
+    console.log("REST API is listening.");
+  });
