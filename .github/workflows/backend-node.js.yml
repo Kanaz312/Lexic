@@ -38,5 +38,5 @@ jobs:
     - uses: akhileshns/heroku-deploy@v3.12.12
       with:
         heroku_api_key: ${{secrets.HEROKU_API_KEY}}
-        heroku_app_name: "csc307-api-bklingen"
-        heroku_email: "bklingen@calpoly.edu"
+        heroku_app_name: "lexic-backend"
+        heroku_email: "tylertycahart@gmail.com"
