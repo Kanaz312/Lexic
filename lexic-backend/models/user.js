@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 
 const UserSchema = new mongoose.Schema({
-  name: {
+  user: {
     type: String,
     required: true,
     trim: true,
@@ -14,6 +14,7 @@ const UserSchema = new mongoose.Schema({
       if (value.length < 2) throw new Error("Invalid job.");
     },
   },
+
 }, {collection : 'users'});
 
 const User = mongoose.model("User", UserSchema);
