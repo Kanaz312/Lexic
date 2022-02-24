@@ -5,7 +5,7 @@ import Users from './Users.js';
 import axios from 'axios';
 import React, {useState, useEffect} from 'react';
 
-const baseUrl = process.env.baseUrl || 'https://localhost:1000'
+const baseUrl = process.env.baseUrl
 
 function App() {
   const [characters, setCharacters] = useState([]);
