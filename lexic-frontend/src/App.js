@@ -5,7 +5,7 @@ import Users from './Users.js';
 import axios from 'axios';
 import React, {useState, useEffect} from 'react';
 
-
+const baseUrl = process.env.baseUrl || 'https://localhost:1000'
 
 function App() {
   const [characters, setCharacters] = useState([]);
@@ -17,7 +17,7 @@ function App() {
  }, [] );
   async function fetchAll(){
   try {
-     const response = await axios.get('https://lexic-backend.herokuapp.com/users');
+     const response = await axios.get(baseUrl + '/users');
      return response.data.users_list;     
   }
   catch (error){
