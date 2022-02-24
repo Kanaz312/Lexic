@@ -12,11 +12,11 @@ app.use(cors());
 app.use(express.json());
 
 
-app.get("/users", (req, res) => {
+app.get("/", (req, res) => {
   res.send("Hello World!");
 });
 
-app.get("/", async (req, res) => {
+app.get("/users", async (req, res) => {
   //res.send(users); //HTTP code 200 is set by default. See an alternative below
   //res.status(200).send(users);
   const name = req.query["name"];
