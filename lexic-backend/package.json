@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\"",
     "start": "node backend.js",
-    "publishToHeroku": "cd ../ && git subtree push --prefix lexic-backend heroku-lexic-backend main || true"
+    "publishToHeroku": "cd ../ && git subtree push --prefix lexic-backend heroku-lexic-backend Tyler-Dev || true"
   },
   "author": "",
   "license": "ISC",
