@@ -123,4 +123,4 @@ async function updateUser(id, updatedUser) {
 app.listen(process.env.PORT || port, () => {
     console.log("REST API is listening.");
   });
-export default app
+
