@@ -17,7 +17,7 @@ function App() {
  }, [] );
   async function fetchAll(){
   try {
-     const response = await axios.get(baseUrl + '/users');
+     const response = await axios.get('https://lexic-backend.herokuapp.com/users');
      return response.data.users_list;     
   }
   catch (error){
