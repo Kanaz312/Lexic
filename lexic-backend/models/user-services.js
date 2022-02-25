@@ -82,3 +82,4 @@ exports.getUsers = getUsers;
 exports.findUserById = findUserById;
 exports.addUser = addUser;
 exports.deleteUser = deleteUser;
+module.exports = mongoose;
