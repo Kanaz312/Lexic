@@ -1,5 +1,5 @@
 const express = require("express");
-const mongoose = require("./user-services.js")
+const mongoose = require("./models/user.js")
 const cors = require("cors");
 
 // Add mongdb user services

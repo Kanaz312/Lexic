@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+const mongoose = require("./user");
 const userModel = require("./user");
 const dotenv = require("dotenv");
 
@@ -82,4 +82,3 @@ exports.getUsers = getUsers;
 exports.findUserById = findUserById;
 exports.addUser = addUser;
 exports.deleteUser = deleteUser;
-module.exports = mongoose;
