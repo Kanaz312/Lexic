@@ -26,6 +26,7 @@ mongoose
   .catch((error) => console.log(error));
 
 async function getUsers(name, job) {
+    console.log("start");
   let result;
   if (name === undefined && job === undefined) {
     result = await userModel.find();
