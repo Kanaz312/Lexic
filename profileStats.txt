@@ -1,0 +1,19 @@
+const [user, setUser] = useState(
+   {
+     username: "",
+     password: "",
+     stats: null,
+     description: "",
+   }
+ );
+
+const [userStats, setUserStats] = useState(
+   {
+      wins: 0,
+      gamesPlayed: 0,
+      winLossRatio: 0,
+      numOfFriends: 0,
+      currency: 0,
+
+   }
+); 
