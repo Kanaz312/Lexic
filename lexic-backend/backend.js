@@ -85,6 +85,9 @@ async function deleteUserById(id) {
 
 app.post("/users", async (req, res) => {
   const user = req.body;
+  //parse user to get username and password (once password is implemented)
+  //check username is unique
+  //check password is valid (future backlog issue)
   if (await userServices.addUser(user)) res.status(201).end();
   else res.status(500).end();
 });
