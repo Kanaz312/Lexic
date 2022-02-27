@@ -1,6 +1,6 @@
 import React from "react";
 function Users(props) {
-  
+
     return (
     <table>
         <User characterData={props.characterData} />
@@ -12,8 +12,8 @@ function User(props)
     const rows = props.characterData.map((row, index) => {
         return (
           <tr key={index}>
-            <td>{row.name}</td>
-            <td>{row.job}</td>
+            <td>{row.username}</td>
+            <td>{row.coins}</td>
             <td>{row.id}</td>
           <td>
       </td>
