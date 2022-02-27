@@ -8,16 +8,17 @@ const UserSchema = new mongoose.Schema({
     },
     coins: {
       type: Number,
-      required: true,
+      required: false,
     },
     winLossRatio: {
       type: Number,
-      required: true,
+      required: false,
     },
     friends: {
-        type: [UserSchema],
+        type: [String],
         default: undefined,
-    },
+        required: false,
+    }
   
   }, {collection : 'users'});
   
