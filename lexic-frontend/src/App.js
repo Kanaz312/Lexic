@@ -4,6 +4,7 @@ import Login from './Login.js';
 import Users from './Users.js';
 import axios from 'axios';
 import React, {useState, useEffect} from 'react';
+import CreateAccount from './CreateAccount';
 
 
 
@@ -30,6 +31,7 @@ function App() {
     <div className="App">
       <Login />
       <Users characterData={characters}  />
+      <CreateAccount/>
     </div>
   );
 }
