@@ -1,6 +1,22 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
+var fs = require("fs");
+
+// read in allowlist
+const allowedWords = fs.readFileSync('./allowed_words.txt', 'utf-8');
+const textByLine = allowedWords.split('\n');
+// create a reference object where every element in allowlist is placed in object allow_ref with a value of 1
+// allow_ref['abacus'] = 1
+// allow_ref['not_int_list'] = undefined
+const allow_ref = textByLine.reduce(function(obj, v) {
+  obj[v] = 1;
+  return obj;
+}, {});
+
+async function isValidWord(word) {
+  return allow_ref[word] === 1;
+}
 
 // Add mongdb user services
 const userServices = require("./models/user-services");
@@ -14,6 +30,13 @@ app.use(express.json());
 
 app.get("/", (req, res) => {
   res.send("Hello World!");
+});
+
+app.get("/guess/:word", async (req, res) => {
+  const word = req.params["word"];
+  let result = await isValidWord(word);
+    result = { wordValidity: result };
+    res.send(result);
 });
 
 app.get("/users", async (req, res) => {

@@ -5,27 +5,24 @@ import Users from './Users.js';
 import Form from './Form.js';
 import axios from 'axios';
 import React, {useState, useEffect} from 'react';
-
-
+import CreateAccount from './CreateAccount';
 
 function App() {
   const [characters, setCharacters] = useState([]);
   useEffect(() => {
-    fetchAll().then( result => {
-       if (result)
-          setCharacters(result);
-     });
- }, [] );
-  async function fetchAll(){
-  try {
-     const response = await axios.get('http://localhost:1000/users');
-     return response.data.users_list;     
-  }
-  catch (error){
-     //We're not handling errors. Just logging into the console.
-     console.log(error); 
-     return false;         
-  }
+    fetchAll().then(result => {
+      if (result) setCharacters(result);
+    });
+  }, []);
+  async function fetchAll() {
+    try {
+      const response = await axios.get("http://localhost:1000/users");
+      return response.data.users_list;
+    } catch (error) {
+      //We're not handling errors. Just logging into the console.
+      console.log(error);
+      return false;
+    }
   }
   async function makePostCall(person) {
     try {
@@ -51,10 +48,10 @@ function App() {
     <div className="App">
       <Login />
       <Users characterData={characters}  />
-      <Form handleSubmit={updateList}/>
+      //<Form handleSubmit={updateList}/>
+      <CreateAccount/>
     </div>
   );
 }
-
 
 export default App;
