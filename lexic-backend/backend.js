@@ -42,9 +42,8 @@ app.get("/guess/:word", async (req, res) => {
 app.get("/users", async (req, res) => {
   //res.send(users); //HTTP code 200 is set by default. See an alternative below
   //res.status(200).send(users);
-  const name = req.query["name"];
-  const job = req.query["job"];
-  if (name === undefined && job === undefined) {
+  const username = req.query["username"];
+  if (username === undefined) {
     try {
       const users_from_db = await userServices.getUsers();
       console.log(users_from_db);
@@ -53,17 +52,8 @@ app.get("/users", async (req, res) => {
       console.log("Mongoose error: " + error);
       res.status(500).send("An error ocurred in the server.");
     }
-  } else if (name && job === undefined) {
-    console.log("in name");
-    let result = await userServices.findUserByName(name);
-    result = { users_list: result };
-    res.send(result);
-  } else if (job && name === undefined) {
-    let result = await userServices.findUserByJob(job);
-    result = { users_list: result };
-    res.send(result);
   } else {
-    let result = await userServices.findUserByNameAndJob(name, job);
+    let result = await userServices.findUserByUsername(username);
     result = { users_list: result };
     res.send(result);
   }
@@ -118,6 +108,9 @@ async function deleteUserById(id) {
 
 app.post("/users", async (req, res) => {
   const user = req.body;
+  //parse user to get username and password (once password is implemented)
+  //check username is unique
+  //check password is valid (future backlog issue)
   if (await userServices.addUser(user)) res.status(201).end();
   else res.status(500).end();
 });
