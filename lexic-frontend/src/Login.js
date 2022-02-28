@@ -6,13 +6,13 @@ function Login() {
       <form>
         <p>
           <label>
-            <pre>Name: </pre>
+            <br/>Name:
             <input type="text" name="name" />
           </label>
         </p>
         <p>
           <label>
-            <pre>Password: </pre>
+            <br/>Password:
             <input type="text" name="pass" />
           </label>
         </p>
