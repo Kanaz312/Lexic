@@ -12,7 +12,7 @@ test('Match Test -- Success', () => {
 });
 
 test('MisMatch letter Words -- Success', () => {
-  const target = [-1, 2, 2, 2, 1];
+  const target = [0, 2, 2, 2, 1];
   const userGuess = 'wordf';
   const challengeWord = 'fords';
   const result = myFunctions.handleGuess(userGuess, challengeWord);
@@ -21,7 +21,7 @@ test('MisMatch letter Words -- Success', () => {
 });
 
 test('MisMatch, No Matching,Words -- Success', () => {
-  const target = [-1, -1, -1, -1, -1];
+  const target = [0, 0, 0, 0, 0];
   const userGuess = 'words';
   const challengeWord = 'pkint';
   const result = myFunctions.handleGuess(userGuess, challengeWord);
@@ -30,7 +30,7 @@ test('MisMatch, No Matching,Words -- Success', () => {
 });
 
 test('MisMatch, Double Letters,Words -- Success', () => {
-  const target = [-1, 2, -1, -1, 2];
+  const target = [0, 2, 0, 0, 2];
   const userGuess = 'vivid';
   const challengeWord = 'Aided';
   const result = myFunctions.handleGuess(userGuess, challengeWord);
@@ -39,7 +39,7 @@ test('MisMatch, Double Letters,Words -- Success', () => {
 });
 
 test('MisMatch, Double Letters,Words -- Success', () => {
-  const target = [-1, -1, -1, 2, 2];
+  const target = [0, 0, 0, 2, 2];
   const userGuess = 'vivid';
   const challengeWord = 'droid';
   const result = myFunctions.handleGuess(userGuess, challengeWord);
