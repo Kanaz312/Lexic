@@ -1,11 +1,12 @@
 import React, {useState, useEffect} from 'react';
 import './Game.css';
 
+
 function Word(props) {
   const letters = props.word.split('').map((letter, index) => {
     return (
       <td key={index}>
-        <div class="letter">
+        <div className='letter'>
           {letter}
         </div>
       </td>
@@ -13,9 +14,7 @@ function Word(props) {
    }
   );
   return (
-    <div class="word">
-      {letters}
-    </div>
+    letters
   );
 }
 
@@ -29,28 +28,45 @@ function GuessHistory(props) {
    }
   );
   return (
-    <div class="guesses">
-      <tbody>
-        {rows}
-      </tbody>
-    </div>
+    <tbody>
+      {rows}
+    </tbody>
   );
 }
 
-function Game() {
-  const words = ['yoink', 'zowie', 'words', '     ', '     ']
-  const upperWords = words.map((word) => {return word.toUpperCase()})
+function Game(props) {
+  const [words, setWords] = useState(Array(props.numGuesses).fill(' '.repeat(props.numLetters)));
+  const [guessIndex, setGuessIndex] = useState(0);
+  const [guess, setGuess] = useState('');
+  console.log(guessIndex);
+  function handleChange(event) {
+    const { name, value } = event.target;
+    console.log(value);
+    setGuess(value);
+  }
+
+  function GuessWord(){
+    words[guessIndex] = guess;
+    setGuessIndex(guessIndex + 1);
+    setWords(words);
+    setGuess('');
+  }
+
   return(
-    <div>
-      <GuessHistory words={upperWords}/>
-      <div class="guessInputContainer">
+    <>
+    <div className='guesses'>
+      <table>
+        <GuessHistory words={words}/>
+      </table>
+    </div>
+      <div className='guessInputContainer'>
         <form>
-          <input class="guessInput"></input>
+          <input className='guessInput' value={guess} onChange={handleChange}/>
           <p/>
-          <input type="submit" value="Submit Guess" />
+          <input type='button' value='Submit Guess' onClick={GuessWord}/>
         </form>
       </div>
-    </div>
+    </>
   );
 }
 
