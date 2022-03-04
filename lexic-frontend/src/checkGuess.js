@@ -1,4 +1,4 @@
-// List of Statuses
+// Integers that represents status of a letter
 // 0 : Letter is not in the word/ Initial State
 const notInWordLetter = 0;
 const letterNotUsed = 0;
@@ -30,7 +30,8 @@ function insertLetter(str, i) {
   return `${str.substring(0, i)}_${str.substring(i + 1)}`;
 }
 
-// returns a list of status, reals, on status of correct letters
+// returns a list of integers that represents
+// match letters in the user's guess
 function handleGuessMatch(dict) {
   const newDict = dict;
   for (let i = 0; i < dict.user.length; i += 1) {
@@ -43,8 +44,8 @@ function handleGuessMatch(dict) {
   return newDict;
 }
 
-// return a list of status,
-// reals, on status of letters in word but mismatch indexes
+// returns a list of integers that represents
+// mismatch letters in the user's guess
 function handleGuessMismatch(dict) {
   const newDict = dict;
   for (let i = 0; i < dict.user.length; i += 1) {
@@ -60,7 +61,8 @@ function handleGuessMismatch(dict) {
   return newDict;
 }
 
-// returns a list of status , reals, on the status of a guess
+// returns a list of integers that represents
+// letters in the user's guess
 function handleGuess(userGuess, challengeWord) {
   let dict = createInitDict(userGuess, challengeWord);
   dict = handleGuessMismatch(handleGuessMatch(dict));
