@@ -6,6 +6,7 @@ import InputAdornment from "@material-ui/core/InputAdornment";
 import VisibilityOff from "@material-ui/icons/VisibilityOff";
 import Input from "@material-ui/core/Input";
 import { Button } from "@material-ui/core";
+import './App.css'
 
 function Login() {
   const [values, setValues] = React.useState({
@@ -28,9 +29,9 @@ function Login() {
 
   return (
     <div className='Login'>
-      <form>
+      <form className='form'>
         <p>
-          <InputLabel htmlFor='standard-adornment-uname'>
+          <InputLabel htmlFor='standard-adornment-password'>
             Enter Your Username
           </InputLabel>
           <Input

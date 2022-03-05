@@ -28,6 +28,16 @@
   color: #61dafb;
 }
 
+.form {
+  max-width: 330px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  background: rgb(228, 243, 237);
+  padding: 20px;
+  margin-top: 30px;
+}
+
 @keyframes App-logo-spin {
   from {
     transform: rotate(0deg);
