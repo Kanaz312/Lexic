@@ -48,7 +48,8 @@ async function addUser(user) {
   try {
     const userToAdd = new userModel(user);
     userToAdd.coins = 500;
-    userToAdd.winLossRatio = 0;
+    userToAdd.wins = 0;
+    userToAdd.losses = 0;
     userToAdd.friends = [""];
     const savedUser = await userToAdd.save();
     return savedUser;
@@ -76,6 +77,26 @@ async function updateCoins(username,value) {
   return await userModel.findOneAndUpdate({username: username},{coins: newValue});
 }
 
+async function win(username,value,win) {
+  const temp = await userModel.find({ username: username });
+  var newCoins = temp[0].coins;
+  var newWins = temp[0].wins;
+  var newLosses = temp[0].losses;
+  if(win)
+  {
+    newCoins += value;
+    newWins++;
+  }
+  else
+  {
+    newCoins -= value;
+    newLosses++;
+  }
+  await userModel.findOneAndUpdate({username: username},{coins: newCoins});
+  await userModel.findOneAndUpdate({username: username},{wins: newWins});
+  return await userModel.findOneAndUpdate({username: username},{losses: newLosses});
+}
+
 
 
 exports.getUsers = getUsers;
@@ -85,3 +106,4 @@ exports.deleteUser = deleteUser;
 exports.findUserByUsername = findUserByUsername;
 exports.updateCoins = updateCoins;
 exports.setCoins = setCoins;
+exports.win = win;

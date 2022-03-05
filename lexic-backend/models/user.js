@@ -15,7 +15,11 @@ const UserSchema = new mongoose.Schema({
       type: Number,
       required: false,
     },
-    winLossRatio: {
+    wins: {
+      type: Number,
+      required: false,
+    },
+    losses: {
       type: Number,
       required: false,
     },
