@@ -39,7 +39,6 @@ function handleGuessMatch(dict) {
       newDict.listStatus.splice(i, 1, matchLetter);
       newDict.challengeStatus.splice(i, 1, letterUsed);
       newDict.user = insertLetter(newDict.user, i);
-      console.log(newDict);
     }
   }
   return newDict;
@@ -56,7 +55,6 @@ function handleGuessMismatch(dict) {
         newDict.listStatus.splice(i, 1, misMatchLetter);
         newDict.challengeStatus.splice(j, 1, letterUsed);
         newDict.user = insertLetter(newDict.user, i);
-        console.log(newDict);
       }
     }
   }
