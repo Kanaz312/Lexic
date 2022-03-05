@@ -44,14 +44,16 @@ function App() {
       }
     });
   }
+  
   return (
     <div className="App">
       <Login />
       <Users characterData={characters}  />
-      //<Form handleSubmit={updateList}/>
       <CreateAccount/>
     </div>
   );
 }
+
+      //<Form handleSubmit={updateList}/>
 
 export default App;
