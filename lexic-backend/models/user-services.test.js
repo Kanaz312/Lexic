@@ -23,6 +23,13 @@ test('findUserByUsername(username) -- Success', async () => {
     expect(result[0]).toStrictEqual(testy);
     expect(result).toStrictEqual(final);
 });
+test('updateCoins(username,value) -- Success', async () => {
+    const testUserName = "TestUser";
+    await userServices.setCoins(testUserName,300);
+    await userServices.updateCoins(testUserName,100);
+    const resulty = await userServices.findUserByUsername(testUserName);
+    expect(resulty[0].coins).toStrictEqual(400);
+});
 test('deleteUser(id) -- Success', async () => {
     const testUserName = "TestUser";
     const done = await userServices.deleteUser(testUserName);

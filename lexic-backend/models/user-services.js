@@ -66,8 +66,22 @@ async function deleteUser(id) {
   return await userModel.deleteByUsername(id);
 }
 
+async function setCoins(username,value) {
+  return await userModel.findOneAndUpdate({username: username},{coins: value});
+}
+
+async function updateCoins(username,value) {
+  const temp = await userModel.find({ username: username });
+  const newValue = temp[0].coins + value;
+  return await userModel.findOneAndUpdate({username: username},{coins: newValue});
+}
+
+
+
 exports.getUsers = getUsers;
 exports.findUserById = findUserById;
 exports.addUser = addUser;
 exports.deleteUser = deleteUser;
 exports.findUserByUsername = findUserByUsername;
+exports.updateCoins = updateCoins;
+exports.setCoins = setCoins;
