@@ -30,18 +30,6 @@ function Login() {
     <div className='Login'>
       <form>
         <p>
-<<<<<<< HEAD
-          <label>
-            <br/>Name:
-            <input type="text" name="name" />
-          </label>
-        </p>
-        <p>
-          <label>
-            <br/>Password:
-            <input type="text" name="pass" />
-          </label>
-=======
           <InputLabel htmlFor='standard-adornment-uname'>
             Enter Your Username
           </InputLabel>
@@ -76,7 +64,6 @@ function Login() {
             onClick={() => console.log('clicked')}>
               Submit
           </Button>
->>>>>>> main
         </p>
       </form>
     </div>

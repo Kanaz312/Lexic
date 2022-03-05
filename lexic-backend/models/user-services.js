@@ -47,6 +47,9 @@ async function findUserById(id) {
 async function addUser(user) {
   try {
     const userToAdd = new userModel(user);
+    userToAdd.coins = 500;
+    userToAdd.winLossRatio = 0;
+    userToAdd.friends = [""];
     const savedUser = await userToAdd.save();
     return savedUser;
   } catch (error) {
@@ -55,8 +58,8 @@ async function addUser(user) {
   }
 }
 
-async function findUserByUsername(name) {
-  return await userModel.find({ username: name });
+async function findUserByUsername(username) {
+  return await userModel.find({ username: username });
 }
 
 async function findUserByJob(job) {
@@ -68,7 +71,7 @@ async function findUserByNameAndJob(name, job) {
 }
 
 async function deleteUser(id) {
-  return await userModel.deleteById(id);
+  return await userModel.deleteByUsername(id);
 }
 
 exports.getUsers = getUsers;
