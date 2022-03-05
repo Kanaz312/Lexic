@@ -46,3 +46,12 @@ test('MisMatch, Double Letters,Words -- Success', () => {
   console.log(result);
   expect(result).toStrictEqual(target);
 });
+
+test('Mismatch letter at end -- Success', () => {
+  const target = [1, 2, 0, 0, 1];
+  const userGuess = 'vocal';
+  const challengeWord = 'loved';
+  const result = myFunctions.handleGuess(userGuess, challengeWord);
+  console.log(result);
+  expect(result).toStrictEqual(target);
+});

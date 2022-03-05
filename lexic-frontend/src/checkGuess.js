@@ -53,7 +53,7 @@ function handleGuessMismatch(dict) {
       if ((dict.user[i] === dict.challenge[j]) && (dict.listStatus[i] === notInWordLetter)
         && (dict.challengeStatus[j] === letterNotUsed)) {
         newDict.listStatus.splice(i, 1, misMatchLetter);
-        newDict.challengeStatus.splice(i, 1, letterUsed);
+        newDict.challengeStatus.splice(j, 1, letterUsed);
         newDict.user = insertLetter(newDict.user, i);
       }
     }
