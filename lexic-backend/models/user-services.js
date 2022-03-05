@@ -62,14 +62,6 @@ async function findUserByUsername(username) {
   return await userModel.find({ username: username });
 }
 
-async function findUserByJob(job) {
-  return await userModel.find({ job: job });
-}
-
-async function findUserByNameAndJob(name, job) {
-  return await userModel.find({ name: name, job: job });
-}
-
 async function deleteUser(id) {
   return await userModel.deleteByUsername(id);
 }
