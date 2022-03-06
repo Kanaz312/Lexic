@@ -1,11 +1,8 @@
 //import React from 'react';
 import './App.css';
-import Login from './Login.js';
-import Users from './Users.js';
-import Form from './Form.js';
 import axios from 'axios';
 import React, {useState, useEffect} from 'react';
-import CreateAccount from './CreateAccount';
+import { Link } from 'react-router-dom';
 
 function App() {
   const [characters, setCharacters] = useState([]);
@@ -35,6 +32,7 @@ function App() {
       return false;
     }
   }
+  
   function updateList(person) {
     makePostCall(person).then(result => {
       if(result && result.status === 201)
@@ -44,12 +42,23 @@ function App() {
       }
     });
   }
+  
+  // placeholder
+  updateList();
+
   return (
-    <div className="App">
-      <Login />
-      <Users characterData={characters}  />
-      //<Form handleSubmit={updateList}/>
-      <CreateAccount/>
+    <div>
+      <h1>Lexic</h1>
+      <nav
+        style={{
+          borderBottom: "solid 1px",
+          paddingBottom: "1rem",
+        }}
+      >
+        <Link to="/login">Login</Link> |{" "}
+        <Link to="/create-account">Create Account</Link> |{" "}
+        <Link to="/reset-password">Reset Password</Link> |{" "}
+      </nav>
     </div>
   );
 }
