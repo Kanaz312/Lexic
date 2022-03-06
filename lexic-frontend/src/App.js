@@ -35,7 +35,7 @@ function App() {
       return false;
     }
   }
-  async function makePostCall(body) {
+  async function makePatchCall(body) {
     try {
       //console.log("trying it");
       const response = await axios.patch('http://localhost:1000/users',body);
@@ -58,7 +58,7 @@ function App() {
   return (
     <div className="App">
       <Login />
-      <Users characterData={characters}  />
+      <Users characterData={characters}/>
       //<Form handleSubmit={updateList}/>
       <CreateAccount/>
     </div>
