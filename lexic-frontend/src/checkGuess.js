@@ -7,6 +7,7 @@ const misMatchLetter = 1;
 const letterUsed = 1;
 // 2 : Letter is in the word, correct index
 const matchLetter = 2;
+const unguessedLetter = 3;
 
 // return a intial dictionary
 function createInitDict(userGuess, challengeWord) {
@@ -70,3 +71,4 @@ function handleGuess(userGuess, challengeWord) {
 }
 
 exports.handleGuess = handleGuess;
+exports.unguessedLetter = unguessedLetter;
