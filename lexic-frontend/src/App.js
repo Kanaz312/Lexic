@@ -35,6 +35,17 @@ function App() {
       return false;
     }
   }
+  async function makePostCall(body) {
+    try {
+      //console.log("trying it");
+      const response = await axios.patch('http://localhost:1000/users',body);
+      return response;
+    }
+    catch(error) {
+      console.log(error);
+      return false;
+    }
+  }
   function updateList(person) {
     makePostCall(person).then(result => {
       if(result && result.status === 201)
