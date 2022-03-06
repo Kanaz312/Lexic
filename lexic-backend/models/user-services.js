@@ -94,7 +94,8 @@ async function win(username,value,win) {
   }
   await userModel.findOneAndUpdate({username: username},{coins: newCoins});
   await userModel.findOneAndUpdate({username: username},{wins: newWins});
-  return await userModel.findOneAndUpdate({username: username},{losses: newLosses});
+  await userModel.findOneAndUpdate({username: username},{losses: newLosses});
+  return await userModel.find({ username: username });
 }
 
 
