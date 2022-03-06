@@ -39,55 +39,79 @@ function GuessHistory(props) {
 }
 
 function Game(props) {
-  const [words, setWords] = useState(Array(props.numGuesses).fill(' '.repeat(props.numLetters)));
-  const [guessIndex, setGuessIndex] = useState(0);
+  const gameState = JSON.parse(localStorage.getItem('gameState')) || {
+    words: Array(props.numGuesses).fill(' '.repeat(3)),
+    guessIndex: 0,
+    guessStates: Array(props.numGuesses).fill(Array(3).fill(unguessedLetter)),
+    challenge: {},
+  }
+
   const [guess, setGuess] = useState('');
-  const [guessStates, setGuessStates] = useState(Array(props.numGuesses).fill(Array(props.numLetters).fill(unguessedLetter)));
-  const [challenge, setChallenge] = useState({});
 
   const updateChallenge = async () => {
-    const response = {"data":{"word" : "loved", "bet" : 40, "from" : "Lexic", "to" : "all"}};//await axios().get();
-    setChallenge(response.data);
+    // only try to update the challenge if it has not been found already
+    if (Object.keys(gameState.challenge).length === 0){
+      const response = {"data":{"word" : "lovelya", "bet" : 40, "from" : "Lexic", "to" : "all"}};//await axios().get();
+      console.log("filling");
+      gameState.words = Array(props.numGuesses).fill(' '.repeat(response.data.word.length));
+      window.location.reload();
+      gameState.challenge = response.data;
+      localStorage.setItem('gameState', JSON.stringify(gameState));
+    }
   }
 
   useEffect(() => {
     updateChallenge();
   }, []);
 
-  console.log(guessIndex);
   function handleChange(event) {
     const { name, value } = event.target;
-    console.log(value);
     setGuess(value);
   }
 
   function GuessWord(){
-    words[guessIndex] = guess;
-    var guessState = handleGuess(guess, challenge.word);
+    const index = gameState.guessIndex;
+    gameState.words[index] = guess;
+    var guessState = handleGuess(guess, gameState.challenge.word);
     console.log(guessState);
-    guessStates[guessIndex] = guessState;
-    setGuessStates(guessStates);
-    setGuessIndex(guessIndex + 1);
-    setWords(words);
+    gameState.guessStates[index] = guessState;
+    gameState.guessIndex = index + 1;
+    localStorage.setItem('gameState', JSON.stringify(gameState));
+    if (gameState.guessIndex >= props.numGuesses) {
+      gameState.challenge = {};
+      localStorage.removeItem('gameState');
+      window.location.reload();
+    }
     setGuess('');
   }
 
-  return(
-    <>
-    <div className='guesses'>
-      <table>
-        <GuessHistory words={words} guessStates={guessStates}/>
-      </table>
-    </div>
-      <div className='guessInputContainer'>
-        <form>
-          <input className='guessInput' value={guess} onChange={handleChange}/>
-          <p/>
-          <input type='button' value='Submit Guess' onClick={GuessWord}/>
-        </form>
+  function temp(){
+    console.log("keydown");
+  }
+
+  const guessStyle = {'resize' : 'none'};
+
+  if (Object.keys(gameState.challenge).length === 0)
+    return(
+      <>Loading Game...</>
+    );
+  else
+    return(
+      <>
+      <div className='guesses'>
+        <table>
+          <GuessHistory words={gameState.words} guessStates={gameState.guessStates}/>
+        </table>
       </div>
-    </>
-  );
+        <div className='guessInputContainer'>
+          <form>
+            <textarea style={guessStyle} className='guessInput' value={guess} onChange={handleChange} onSubmit={temp}/>
+            <p/>
+            <input type='button' value='Submit Guess' onClick={GuessWord}/>
+          </form>
+        </div>
+      </>
+    );
 }
 
 
