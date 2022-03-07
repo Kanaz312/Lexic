@@ -16,6 +16,8 @@ import {
 
 import Userfront from '@userfront/react';
 import axios from 'axios';
+import Game from './Game';
+import {createAuthHeader, getUserName} from './UserFrontUtils';
 
 Userfront.init("jb7pw8rn");
 
@@ -51,15 +53,17 @@ render(
             paddingBottom: "1rem",
           }}
         >
-          <Link to="/login">Login</Link> |{" "}
-          <Link to="/create-account">Create Account</Link> |{" "}
-          <Link to="/reset-password">Reset Password</Link> |{" "}
-          {Userfront.accessToken() && (<Link to="/dashboard">Dashboard</Link>)}
+          {!Userfront.accessToken() && <Link to="/login">| Login | </Link>}
+          {!Userfront.accessToken() && <Link to="/create-account">Create Account | </Link>}
+          {!Userfront.accessToken() && <Link to="/reset-password">Reset Password | </Link>}
+          {Userfront.accessToken() && (<Link to="/dashboard">| Dashboard |</Link>)}
+          {Userfront.accessToken() && (<Link to="/game">| Game |</Link>)}
         </nav>
       </div>
     <Routes>
     <Route path="/" element={<PrivateRoutes />} >
       <Route path='dashboard' element={<Dashboard />} ></Route>
+      <Route path='game' element={<Game />} ></Route>
     </Route>
       <Route path="/login" element={<LoginForm />} />
       <Route path="/reset-password" element={<PasswordResetForm />} />
@@ -103,16 +107,6 @@ async function makePostCall() {
     console.log(error);
     return false;
   }
-}
-
-// returns the authentication header we need to pass on EVERY api call
-async function createAuthHeader() {
-  return { headers: { "Content-Type": "application/json", Authorization: `Bearer ${Userfront.accessToken()}`} }
-}
-
-// returns the username of the current user to be put in the body of the call
-async function getUserName() {
-  return Userfront.user['name'];
 }
 
 // If you want to start measuring performance in your app, pass a function
