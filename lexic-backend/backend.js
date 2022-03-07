@@ -2,6 +2,7 @@ const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
 var fs = require("fs");
+const jwt = require('jsonwebtoken');
 
 // read in allowlist
 const allowedWords = fs.readFileSync('./allowed_words.txt', 'utf-8');
@@ -90,6 +91,10 @@ async function findUserById(id) {
   }
 }
 
+async function findUserByUid(uid) {
+    return await userServices.findUserByUid(uid);
+}
+
 app.delete("/users/:id", async (req, res) => {
   const id = req.params["id"];
   if (deleteUserById(id)) res.status(204).end();
@@ -114,6 +119,10 @@ app.post("/users", async (req, res) => {
   else res.status(500).end();
 });
 
+async function addNewUser(name, uid) {
+  await userServices.createUser(name, uid);
+}
+
 app.patch("/users/:id", async (req, res) => {
   const id = req.params["id"];
   const updatedUser = req.body;
@@ -132,6 +141,60 @@ app.patch("/users", async (req, res) => {
   const userFound = await userServices.win(user.username, gameResult.bet, gameResult.win);
   if (userFound.username === undefined)res.status(404).send("Resource not found."); 
   else res.status(204).end();
+
+// authenticates and checks if accounts exists
+async function authAndCheckExistence(req) {
+  auth = await authenticateToken(req);
+  if(!auth) {
+    return false;
+  }
+  await checkAccExists(req.body['Name'], auth['userUuid']);
+  return auth;
+}
+
+// creates new account if one doesn't exist
+async function checkAccExists(name, uid) {
+  const accExists = await findUserByUid(uid);
+  if (!accExists) {
+    console.log('adding new user with name and id', name, uid);
+    await addNewUser(name, uid);
+    // console.log('added new user');
+  }
+  // console.log('verified successfully');
+}
+
+// given a request, returns the decrypted authentication token
+async function authenticateToken(req) {
+  const authHeader = req.headers['authorization'];
+  // console.log('authentication header is:', authHeader);
+  const token = authHeader && authHeader.split(' ')[1];
+  // console.log('token is:', token);
+  if (token == null) return false;
+  // console.log('\n\nUSERFRONT PUB KEY:', process.env.USERFRONT_PUBLIC_KEY);
+  return jwt.verify(token, process.env.USERFRONT_PUBLIC_KEY, (err, auth) => {
+    // console.log('\nauth is:', auth);
+    // console.log('error: ', err);    
+    if (err) return false;
+    return auth;
+  });
+}
+
+// EXAMPLE
+app.post('/test', async (req, res) => {
+  // console.log('hit test endpoint');
+  const userInfo = await authAndCheckExistence(req);
+  // console.log('userID query: ', await findUserByUid('asdl;fkjsldkfjsldkjfs'));
+  // console.log('userinfo is: ', userInfo);
+  if (!userInfo) {
+    res.status(403).send('Auth Header is either missing or invalid!').end();
+    return;
+  }
+  const body = req.body;
+  // console.log(userInfo);
+  //console.log("FIELD: ", userInfo['name']);
+  // console.log("FIELD: ", userInfo['userUuid']);
+  // console.log('BODY: ', body);
+  res.status(200).send('valid stuff received');
 });
 
 async function updateUser(id, updatedUser) {
