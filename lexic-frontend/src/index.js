@@ -3,6 +3,7 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 
+
 import { render } from "react-dom";
 import {
   BrowserRouter,
@@ -16,6 +17,9 @@ import {
 
 import Userfront from '@userfront/react';
 import axios from 'axios';
+const dotenv = require("dotenv");
+
+dotenv.config();
 
 Userfront.init("jb7pw8rn");
 
@@ -95,7 +99,7 @@ async function makePostCall() {
       Name: await getUserName()
     }
     // make the post call with the body and config
-    const response = await axios.post('http://localhost:1000/test',  body, config);
+    const response = await axios.post(process.env.URL + '/test',  body, config);
     console.log("RESPONSE: ", response);
     return response;
   }
