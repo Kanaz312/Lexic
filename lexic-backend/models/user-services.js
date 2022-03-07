@@ -73,9 +73,10 @@ async function createUser(name, uid) {
     // adds to DB
     userToAdd.username = name;
     userToAdd.uid = uid;
-    userToAdd.coins = 0;
-    userToAdd.winLossRatio = 0;
-    userToAdd.friends = [];
+    userToAdd.coins = 500;
+    userToAdd.wins = 0;
+    userToAdd.losses = 0;
+    userToAdd.friends = [""];
     const savedUser = await userToAdd.save();
     return savedUser;
   } catch (error) {
@@ -84,9 +85,10 @@ async function createUser(name, uid) {
   }
 }
 
-async function findUserByUsername(name) {
-  return await userModel.find({ username: name });
+async function findUserByUsername(username) {
+  return await userModel.find({ username: username });
 }
+
 
 async function findUserByUid(uid) {
   return await userModel.findOne({ uid: uid });
@@ -94,15 +96,44 @@ async function findUserByUid(uid) {
 
 async function findUserByJob(job) {
   return await userModel.find({ job: job });
-}
-
-async function findUserByNameAndJob(name, job) {
-  return await userModel.find({ name: name, job: job });
-}
 
 async function deleteUser(id) {
-  return await userModel.deleteById(id);
+  return await userModel.deleteByUsername(id);
+
 }
+
+async function setCoins(username,value) {
+  return await userModel.findOneAndUpdate({username: username},{coins: value});
+}
+
+async function updateCoins(username,value) {
+  const temp = await userModel.find({ username: username });
+  const newValue = temp[0].coins + value;
+  return await userModel.findOneAndUpdate({username: username},{coins: newValue});
+}
+
+async function win(username,value,win) {
+  const temp = await userModel.find({ username: username });
+  var newCoins = temp[0].coins;
+  var newWins = temp[0].wins;
+  var newLosses = temp[0].losses;
+  if(win)
+  {
+    newCoins += value;
+    newWins++;
+  }
+  else
+  {
+    newCoins -= value;
+    newLosses++;
+  }
+  await userModel.findOneAndUpdate({username: username},{coins: newCoins});
+  await userModel.findOneAndUpdate({username: username},{wins: newWins});
+  await userModel.findOneAndUpdate({username: username},{losses: newLosses});
+  return await userModel.find({ username: username });
+}
+
+
 
 exports.getUsers = getUsers;
 exports.findUserById = findUserById;
@@ -111,3 +142,6 @@ exports.deleteUser = deleteUser;
 exports.findUserByUsername = findUserByUsername;
 exports.findUserByUid = findUserByUid;
 exports.createUser = createUser;
+exports.updateCoins = updateCoins;
+exports.setCoins = setCoins;
+exports.win = win;
