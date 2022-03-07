@@ -46,7 +46,36 @@ async function findUserById(id) {
 
 async function addUser(user) {
   try {
+    // default userModel
     const userToAdd = new userModel(user);
+    // add all of the qualifications here
+    // userToadd.coins = 500
+    // adds to DB
+    const savedUser = await userToAdd.save();
+    return savedUser;
+  } catch (error) {
+    console.log(error);
+    return false;
+  }
+}
+
+async function createUser(name, uid) {
+  user = {
+    username: "",
+    coins: "",
+    //id: "",
+ };
+  try {
+    // default userModel
+    const userToAdd = new userModel(user);
+    // add all of the qualifications here
+    // userToadd.coins = 500
+    // adds to DB
+    userToAdd.username = name;
+    userToAdd.uid = uid;
+    userToAdd.coins = 0;
+    userToAdd.winLossRatio = 0;
+    userToAdd.friends = [];
     const savedUser = await userToAdd.save();
     return savedUser;
   } catch (error) {
@@ -57,6 +86,10 @@ async function addUser(user) {
 
 async function findUserByUsername(name) {
   return await userModel.find({ username: name });
+}
+
+async function findUserByUid(uid) {
+  return await userModel.findOne({ uid: uid });
 }
 
 async function findUserByJob(job) {
@@ -73,6 +106,8 @@ async function deleteUser(id) {
 
 exports.getUsers = getUsers;
 exports.findUserById = findUserById;
-exports.addUser = addUser;
+exports.add = addUser;
 exports.deleteUser = deleteUser;
 exports.findUserByUsername = findUserByUsername;
+exports.findUserByUid = findUserByUid;
+exports.createUser = createUser;
