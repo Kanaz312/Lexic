@@ -34,16 +34,15 @@ app.get("/", (req, res) => {
 });
 
 // AUTHENTICATION HERE
-app.get("/guess/", async (req, res) => {
+app.get("/guess/:word/:name", async (req, res) => {
   console.log('initial req body', req.body);
   console.log('initial headers', req.headers);
   console.log('params', req.params);
   const userInfo = await authAndCheckExistence(req);
-  // username
-  const userName = req.body['Name'];
   // uuid
   const uuid = userInfo['userUuid'];
-  const word = req.body['word'];
+  const word = req.params["word"];
+  const userName = req.params['name'];
   let result = await isValidWord(word);
   console.log('userinfo:', userInfo);
   console.log('guess received with word, uuid, userName, and result:', word, uuid, userName, result);

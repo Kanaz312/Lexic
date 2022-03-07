@@ -93,15 +93,10 @@ function Game(props) {
   }
 
   async function validateWord(word) {
-    let config = { headers: { "Content-Type": "application/json", Authorization: `Bearer ${Userfront.accessToken()}`} };
+    const config = await createAuthHeader();
     console.log('config in guess is:', config);
     const name = await getUserName();
-    let body = {
-      Name: name,
-      word: word,
-    }
-    console.log('body in guess request is:', body);
-    const response = await axios.get(`http://localhost:1000/guess/`, body, config);
+    const response = await axios.get(`http://localhost:1000/guess/${word}/${name}`, config);
     return response.data;
   }
 
