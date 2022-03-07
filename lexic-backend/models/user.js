@@ -6,11 +6,20 @@ const UserSchema = new mongoose.Schema({
       required: true,
       trim: true,
     },
+    password: {
+      type: String,
+      required: true,
+      trim: true,
+    },
     coins: {
       type: Number,
       required: false,
     },
-    winLossRatio: {
+    wins: {
+      type: Number,
+      required: false,
+    },
+    losses: {
       type: Number,
       required: false,
     },
@@ -22,7 +31,14 @@ const UserSchema = new mongoose.Schema({
   
   }, {collection : 'users'});
   
-
+  UserSchema.statics.deleteById = function(_id) {
+    return this.deleteOne({ _id: _id })
+  };
+  UserSchema.statics.deleteByUsername = function(username) {
+    return this.deleteOne({ username: username })
+  };
 const User = mongoose.model("User", UserSchema);
+
+
 
 module.exports = User;

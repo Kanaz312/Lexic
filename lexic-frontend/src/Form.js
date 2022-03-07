@@ -4,23 +4,25 @@ function Form(props) {
   const [person, setPerson] = useState(
      {
         username: "",
-        coins: "",
+        password: "",
+        //coins: 0,
+
         //id: "",
      }
   );
   function submitForm() {
     props.handleSubmit(person);
-    setPerson({username: '', coins: ''});
+    setPerson({username: '', password: ''});
   }
   function handleChange(event) {
     const { name, value } = event.target;
-    if (name === "coins")
+    if (name === "password")
       setPerson(
-         {username: person['username'], coins: value}
+         {username: person['username'], password: value}
       );
     else     
        setPerson(
-         {username: value, coins: person['coins']}   
+         {username: value, password: person['password']}   
        );
   }
   return (
@@ -32,12 +34,12 @@ function Form(props) {
         id="username"
         value={person.username}
         onChange={handleChange} />
-      <label htmlFor="coins">Coins</label>
+      <label htmlFor="password">Password</label>
       <input
         type="text"
-        name="coins"
-        id="coins"
-        value={person.coins}
+        name="password"
+        id="password"
+        value={person.password}
         onChange={handleChange} />
         <input type="button" value="Submit" onClick={submitForm} />
     </form>
