@@ -33,9 +33,9 @@ app.get("/", (req, res) => {
 });
 
 app.get("/guess/:word", async (req, res) => {
+  console.log(req.params);
   const word = req.params["word"];
   let result = await isValidWord(word);
-    result = { wordValidity: result };
     res.send(result);
 });
 

@@ -4,7 +4,9 @@ import axios from 'axios';
 import './checkGuess';
 import { handleGuess, unguessedLetter } from './checkGuess';
 
-const colors = ['red', 'orange', 'green', 'burlywood']
+const colors = ['red', 'orange', 'green', 'burlywood'];
+const defaultNumGuesses = 5;
+
 function Word(props) {
   const letters = props.word.split('').map((letter, index) => {
     const letterStyle = {"backgroundColor": colors[props.guessState[index]]};
@@ -40,9 +42,10 @@ function GuessHistory(props) {
 
 function Game(props) {
   const gameState = JSON.parse(localStorage.getItem('gameState')) || {
-    words: Array(props.numGuesses).fill(' '.repeat(3)),
+    words: Array(defaultNumGuesses).fill(' '.repeat(3)),
+    numGuesses: defaultNumGuesses,
     guessIndex: 0,
-    guessStates: Array(props.numGuesses).fill(Array(3).fill(unguessedLetter)),
+    guessStates: Array(defaultNumGuesses).fill(Array(3).fill(unguessedLetter)),
     challenge: {},
   }
 
@@ -51,10 +54,13 @@ function Game(props) {
   const updateChallenge = async () => {
     // only try to update the challenge if it has not been found already
     if (Object.keys(gameState.challenge).length === 0){
-      const response = {"data":{"word" : "lovelya", "bet" : 40, "from" : "Lexic", "to" : "all"}};//await axios().get();
-      console.log("filling");
-      gameState.words = Array(props.numGuesses).fill(' '.repeat(response.data.word.length));
-      gameState.challenge = response.data;
+      const response = {"data":{"word" : "racket", "numGuesses" : 6, "bet" : 40, "from" : "Lexic", "to" : "all"}};
+      const data = response.data;
+      gameState.numGuesses = data.numGuesses;
+      const wordLen = data.word.length;
+      gameState.words = Array(gameState.numGuesses).fill(' '.repeat(wordLen));
+      gameState.challenge = data;
+      gameState.guessStates = Array(data.numGuesses).fill(Array(wordLen).fill(unguessedLetter));
       localStorage.setItem('gameState', JSON.stringify(gameState));
       window.location.reload();
     }
@@ -69,20 +75,30 @@ function Game(props) {
     setGuess(value);
   }
 
-  function GuessWord(){
+  const validateWord = async (word) => {
+    const response = await axios.get(`http://localhost:1000/guess/${word}`);
+    return response.data;
+  }
+
+  const guessWord = async() => {
     const index = gameState.guessIndex;
     gameState.words[index] = guess;
-    var guessState = handleGuess(guess, gameState.challenge.word);
-    console.log(guessState);
-    gameState.guessStates[index] = guessState;
-    gameState.guessIndex = index + 1;
-    localStorage.setItem('gameState', JSON.stringify(gameState));
-    if (gameState.guessIndex >= props.numGuesses) {
-      gameState.challenge = {};
-      localStorage.removeItem('gameState');
-      window.location.reload();
+    if (gameState.challenge.word.length === guess.length
+      && await validateWord(guess)){
+      var guessState = handleGuess(guess, gameState.challenge.word);
+      gameState.guessStates[index] = guessState;
+      gameState.guessIndex = index + 1;
+      localStorage.setItem('gameState', JSON.stringify(gameState));
+      if (gameState.guessIndex >= gameState.numGuesses) {
+        gameState.challenge = {};
+        localStorage.removeItem('gameState');
+        window.location.reload();
+      }
+      setGuess('');
+      return;
     }
     setGuess('');
+    console.log('Invalid word');
   }
 
   function temp(){
@@ -107,7 +123,7 @@ function Game(props) {
           <form>
             <textarea style={guessStyle} className='guessInput' value={guess} onChange={handleChange} onSubmit={temp}/>
             <p/>
-            <input type='button' value='Submit Guess' onClick={GuessWord}/>
+            <input type='button' value='Submit Guess' onClick={guessWord}/>
           </form>
         </div>
       </>
