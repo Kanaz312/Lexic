@@ -8,6 +8,7 @@ import {createAuthHeader, getUserName} from './UserFrontUtils';
 
 const colors = ['red', 'orange', 'green', 'burlywood'];
 const defaultNumGuesses = 5;
+const guessMessages = ['Guess Wrong Length','Guess Was Not a Word'];
 
 function Word(props) {
   const letters = props.word.split('').map((letter, index) => {
@@ -53,6 +54,7 @@ function Game(props) {
   }
 
   const [guess, setGuess] = useState('');
+  const [guessValidity, setGuessValidity] = useState(0);
 
   async function makePatchCall(body) {
     try {
@@ -134,17 +136,21 @@ function Game(props) {
         window.location.reload();
       }
       setGuess('');
+      setGuessValidity(0);
       return;
     }
+
     setGuess('');
+    if (gameState.challenge.word.length === guess.length)
+      setGuessValidity(2);
+    else
+      setGuessValidity(1);
     console.log('Invalid word');
   }
 
   function temp(){
     console.log("keydown");
   }
-
-  const guessStyle = {'resize' : 'none'};
 
   if (Object.keys(gameState.challenge).length === 0)
     return(
@@ -153,14 +159,19 @@ function Game(props) {
   else
     return(
       <>
-      <div className='guesses'>
-        <table>
-          <GuessHistory words={gameState.words} guessStates={gameState.guessStates}/>
-        </table>
-      </div>
+        <div className='guesses'>
+          <table>
+            <GuessHistory words={gameState.words} guessStates={gameState.guessStates}/>
+          </table>
+        </div>
+        <div className='invalidWordText'>
+          {guessValidity !== 0 && <h2>{guessMessages[guessValidity-1]}</h2>}
+        </div>
         <div className='guessInputContainer'>
           <form>
-            <textarea style={guessStyle} className='guessInput' value={guess} onChange={handleChange} onSubmit={temp}/>
+            <textarea style={{'resize' : 'none'}} className='guessInput' value={guess}
+              onKeyPress={(e)=> {if(e.key === 'Enter') {guessWord(); e.preventDefault();}}}
+              onChange={handleChange} onSubmit={temp}/>
             <p/>
             <input type='button' value='Submit Guess' onClick={guessWord}/>
           </form>
