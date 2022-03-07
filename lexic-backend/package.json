@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "jest",
+    "test": "jest --forceExit",
     "start": "node backend.js",
     "publishToHeroku": "cd ../ && git subtree push --prefix lexic-backend heroku-lexic-backend main || true"
   },
