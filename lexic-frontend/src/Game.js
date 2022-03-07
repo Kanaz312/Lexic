@@ -54,9 +54,9 @@ function Game(props) {
       const response = {"data":{"word" : "lovelya", "bet" : 40, "from" : "Lexic", "to" : "all"}};//await axios().get();
       console.log("filling");
       gameState.words = Array(props.numGuesses).fill(' '.repeat(response.data.word.length));
-      window.location.reload();
       gameState.challenge = response.data;
       localStorage.setItem('gameState', JSON.stringify(gameState));
+      window.location.reload();
     }
   }
 
