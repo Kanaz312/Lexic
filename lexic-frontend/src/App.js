@@ -68,6 +68,7 @@ function App() {
         <Link to="/login">Login</Link> |{" "}
         <Link to="/create-account">Create Account</Link> |{" "}
         <Link to="/reset-password">Reset Password</Link> |{" "}
+        <Link to="/dashboard">Dashboard</Link> | {" "}
       </nav>
     </div>
   );

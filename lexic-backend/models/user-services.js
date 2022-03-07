@@ -46,7 +46,33 @@ async function findUserById(id) {
 
 async function addUser(user) {
   try {
+    // default userModel
     const userToAdd = new userModel(user);
+    // add all of the qualifications here
+    // userToadd.coins = 500
+    // adds to DB
+    const savedUser = await userToAdd.save();
+    return savedUser;
+  } catch (error) {
+    console.log(error);
+    return false;
+  }
+}
+
+async function createUser(name, uid) {
+  user = {
+    username: "",
+    coins: "",
+    //id: "",
+ };
+  try {
+    // default userModel
+    const userToAdd = new userModel(user);
+    // add all of the qualifications here
+    // userToadd.coins = 500
+    // adds to DB
+    userToAdd.username = name;
+    userToAdd.uid = uid;
     userToAdd.coins = 500;
     userToAdd.wins = 0;
     userToAdd.losses = 0;
@@ -63,8 +89,17 @@ async function findUserByUsername(username) {
   return await userModel.find({ username: username });
 }
 
+
+async function findUserByUid(uid) {
+  return await userModel.findOne({ uid: uid });
+}
+
+async function findUserByJob(job) {
+  return await userModel.find({ job: job });
+
 async function deleteUser(id) {
   return await userModel.deleteByUsername(id);
+
 }
 
 async function setCoins(username,value) {
@@ -102,9 +137,11 @@ async function win(username,value,win) {
 
 exports.getUsers = getUsers;
 exports.findUserById = findUserById;
-exports.addUser = addUser;
+exports.add = addUser;
 exports.deleteUser = deleteUser;
 exports.findUserByUsername = findUserByUsername;
+exports.findUserByUid = findUserByUid;
+exports.createUser = createUser;
 exports.updateCoins = updateCoins;
 exports.setCoins = setCoins;
 exports.win = win;
