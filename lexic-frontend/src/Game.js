@@ -3,8 +3,8 @@ import './Game.css';
 import axios from 'axios';
 import './checkGuess';
 import { handleGuess, unguessedLetter } from './checkGuess';
-const dotenv = require("dotenv");
-dotenv.config();
+//const dotenv = require("dotenv");
+//dotenv.config();
 
 const colors = ['red', 'orange', 'green', 'burlywood'];
 const defaultNumGuesses = 5;
@@ -56,7 +56,7 @@ function Game(props) {
 
   async function makePatchCall(body) {
     try {
-      const response = await axios.patch(process.env.URL + '/users', body);
+      const response = await axios.patch('https://lexic-backend.herokuapp.com' + '/users', body);
       return response;
     }
     catch(error) {
@@ -91,7 +91,7 @@ function Game(props) {
   }
 
   const validateWord = async (word) => {
-    const response = await axios.get(process.env.URL + `/guess/${word}`);
+    const response = await axios.get('https://lexic-backend.herokuapp.com' + `/guess/${word}`);
     return response.data;
   }
 
