@@ -13,6 +13,7 @@
     "@userfront/react": "^0.2.22",
     "axios": "^0.26.0",
     "dotenv": "^16.0.0",
+    "fs": "^0.0.1-security",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-router-dom": "^6.2.2",
