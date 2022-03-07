@@ -39,6 +39,7 @@ app.get("/guess/:word/:name", async (req, res) => {
   console.log('initial headers', req.headers);
   console.log('params', req.params);
   const userInfo = await authAndCheckExistence(req);
+  if (!userInfo) res.status(403).send('Auth Header is either missing or invalid!');
   // uuid
   const uuid = userInfo['userUuid'];
   const word = req.params["word"];
