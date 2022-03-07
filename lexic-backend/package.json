@@ -4,9 +4,14 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+<<<<<<< HEAD
     "test": "echo \"Error: no test specified\"",
     "start": "node backend.js",
     "publishToHeroku": "cd ../ && git subtree push --prefix lexic-backend heroku-lexic-backend main || true"
+=======
+    "test": "jest",
+    "start": "node backend.js"
+>>>>>>> main
   },
   "author": "",
   "license": "ISC",
@@ -14,6 +19,10 @@
     "cors": "^2.8.5",
     "dotenv": "^16.0.0",
     "express": "^4.17.2",
-    "mongoose": "^6.2.1"
+    "jest": "^27.5.1",
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^6.2.1",
+    "react-router-dom": "^6.2.2",
+    "react-scripts": "^5.0.0"
   }
 }

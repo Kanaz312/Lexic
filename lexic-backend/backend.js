@@ -1,6 +1,23 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
+var fs = require("fs");
+const jwt = require('jsonwebtoken');
+
+// read in allowlist
+const allowedWords = fs.readFileSync('./allowed_words.txt', 'utf-8');
+const textByLine = allowedWords.split('\n');
+// create a reference object where every element in allowlist is placed in object allow_ref with a value of 1
+// allow_ref['abacus'] = 1
+// allow_ref['not_int_list'] = undefined
+const allow_ref = textByLine.reduce(function(obj, v) {
+  obj[v] = 1;
+  return obj;
+}, {});
+
+async function isValidWord(word) {
+  return allow_ref[word] === 1;
+}
 
 // Add mongdb user services
 const userServices = require("./models/user-services");
@@ -16,12 +33,17 @@ app.get("/", (req, res) => {
   res.send("Hello World!");
 });
 
+app.get("/guess/:word", async (req, res) => {
+  const word = req.params["word"];
+  let result = await isValidWord(word);
+    res.send(result);
+});
+
 app.get("/users", async (req, res) => {
   //res.send(users); //HTTP code 200 is set by default. See an alternative below
   //res.status(200).send(users);
-  const name = req.query["name"];
-  const job = req.query["job"];
-  if (name === undefined && job === undefined) {
+  const username = req.query["username"];
+  if (username === undefined) {
     try {
       const users_from_db = await userServices.getUsers();
       console.log(users_from_db);
@@ -30,17 +52,8 @@ app.get("/users", async (req, res) => {
       console.log("Mongoose error: " + error);
       res.status(500).send("An error ocurred in the server.");
     }
-  } else if (name && job === undefined) {
-    console.log("in name");
-    let result = await userServices.findUserByName(name);
-    result = { users_list: result };
-    res.send(result);
-  } else if (job && name === undefined) {
-    let result = await userServices.findUserByJob(job);
-    result = { users_list: result };
-    res.send(result);
   } else {
-    let result = await userServices.findUserByNameAndJob(name, job);
+    let result = await userServices.findUserByUsername(username);
     result = { users_list: result };
     res.send(result);
   }
@@ -78,6 +91,10 @@ async function findUserById(id) {
   }
 }
 
+async function findUserByUid(uid) {
+    return await userServices.findUserByUid(uid);
+}
+
 app.delete("/users/:id", async (req, res) => {
   const id = req.params["id"];
   if (deleteUserById(id)) res.status(204).end();
@@ -95,9 +112,16 @@ async function deleteUserById(id) {
 
 app.post("/users", async (req, res) => {
   const user = req.body;
+  //parse user to get username and password (once password is implemented)
+  //check username is unique
+  //check password is valid (future backlog issue)
   if (await userServices.addUser(user)) res.status(201).end();
   else res.status(500).end();
 });
+
+async function addNewUser(name, uid) {
+  await userServices.createUser(name, uid);
+}
 
 app.patch("/users/:id", async (req, res) => {
   const id = req.params["id"];
@@ -107,6 +131,71 @@ app.patch("/users/:id", async (req, res) => {
   else if (result === 404) res.status(404).send("Resource not found.");
   else if (result === 500)
     res.status(500).send("An error ocurred in the server.");
+});
+
+app.patch("/users", async (req, res) => {
+  const body = req.body;
+  const user = body.user;
+  const gameResult = body.result;
+  //user.uuid verification
+  const userFound = await userServices.win(user.username, gameResult.bet, gameResult.win);
+  if (userFound.username === undefined)res.status(404).send("Resource not found."); 
+  else res.status(204).end();
+});
+
+// authenticates and checks if accounts exists
+async function authAndCheckExistence(req) {
+  auth = await authenticateToken(req);
+  if(!auth) {
+    return false;
+  }
+  await checkAccExists(req.body['Name'], auth['userUuid']);
+  return auth;
+}
+
+// creates new account if one doesn't exist
+async function checkAccExists(name, uid) {
+  const accExists = await findUserByUid(uid);
+  if (!accExists) {
+    console.log('adding new user with name and id', name, uid);
+    await addNewUser(name, uid);
+    // console.log('added new user');
+  }
+  // console.log('verified successfully');
+}
+
+// given a request, returns the decrypted authentication token
+async function authenticateToken(req) {
+  const authHeader = req.headers['authorization'];
+  // console.log('authentication header is:', authHeader);
+  const token = authHeader && authHeader.split(' ')[1];
+  // console.log('token is:', token);
+  if (token == null) return false;
+  // console.log('\n\nUSERFRONT PUB KEY:', process.env.USERFRONT_PUBLIC_KEY);
+  return jwt.verify(token, process.env.USERFRONT_PUBLIC_KEY, (err, auth) => {
+    // console.log('\nauth is:', auth);
+    // console.log('error: ', err);    
+    if (err) return false;
+    return auth;
+  });
+}
+
+// EXAMPLE
+app.post('/test', async (req, res) => {
+  // console.log('hit test endpoint');
+  const userInfo = await authAndCheckExistence(req);
+  // console.log('userID query: ', await findUserByUid('asdl;fkjsldkfjsldkjfs'));
+  // console.log('userinfo is: ', userInfo);
+  if (!userInfo) {
+    res.status(403).send('Auth Header is either missing or invalid!').end();
+    return;
+  }
+  const body = req.body;
+  // console.log(userInfo);
+  //console.log("FIELD: ", userInfo['name']);
+  // console.log("FIELD: ", userInfo['userUuid']);
+  // console.log('BODY: ', body);
+  res.status(200).send('valid stuff received');
 });
 
 async function updateUser(id, updatedUser) {

@@ -25,19 +25,26 @@ mongoose
   )
   .catch((error) => console.log(error));
 
+<<<<<<< HEAD
 async function getUsers(name, job) {
     console.log("start");
+=======
+async function getUsers(username) {
+>>>>>>> main
   let result;
-  if (name === undefined && job === undefined) {
+  if (username === undefined) {
     result = await userModel.find();
+<<<<<<< HEAD
     console.log("hello");
     console.log(result);
   } else if (name && !job) {
     result = await findUserByName(name);
   } else if (job && !name) {
     result = await findUserByJob(job);
+=======
+>>>>>>> main
   } else {
-    result = await findUserByNameAndJob(name, job);
+    result = await findUserByUsername(username);
   }
   return result;
 }
@@ -53,7 +60,11 @@ async function findUserById(id) {
 
 async function addUser(user) {
   try {
+    // default userModel
     const userToAdd = new userModel(user);
+    // add all of the qualifications here
+    // userToadd.coins = 500
+    // adds to DB
     const savedUser = await userToAdd.save();
     return savedUser;
   } catch (error) {
@@ -62,23 +73,91 @@ async function addUser(user) {
   }
 }
 
-async function findUserByName(name) {
-  return await userModel.find({ name: name });
+async function createUser(name, uid) {
+  user = {
+    username: "",
+    coins: "",
+    //id: "",
+ };
+  try {
+    // default userModel
+    const userToAdd = new userModel(user);
+    // add all of the qualifications here
+    // userToadd.coins = 500
+    // adds to DB
+    userToAdd.username = name;
+    userToAdd.uid = uid;
+    userToAdd.coins = 500;
+    userToAdd.wins = 0;
+    userToAdd.losses = 0;
+    userToAdd.friends = [""];
+    const savedUser = await userToAdd.save();
+    return savedUser;
+  } catch (error) {
+    console.log(error);
+    return false;
+  }
+}
+
+async function findUserByUsername(username) {
+  return await userModel.find({ username: username });
+}
+
+
+async function findUserByUid(uid) {
+  return await userModel.findOne({ uid: uid });
 }
 
 async function findUserByJob(job) {
   return await userModel.find({ job: job });
 }
-
-async function findUserByNameAndJob(name, job) {
-  return await userModel.find({ name: name, job: job });
-}
-
 async function deleteUser(id) {
-  return await userModel.deleteById(id);
+  return await userModel.deleteByUsername(id);
+
 }
 
+async function setCoins(username,value) {
+  return await userModel.findOneAndUpdate({username: username},{coins: value});
+}
+
+async function updateCoins(username,value) {
+  const temp = await userModel.find({ username: username });
+  const newValue = temp[0].coins + value;
+  return await userModel.findOneAndUpdate({username: username},{coins: newValue});
+}
+
+async function win(username,value,win) {
+  const temp = await userModel.find({ username: username });
+  var newCoins = temp[0].coins;
+  var newWins = temp[0].wins;
+  var newLosses = temp[0].losses;
+  if(win)
+  {
+    newCoins += value;
+    newWins++;
+  }
+  else
+  {
+    newCoins -= value;
+    newLosses++;
+  }
+  await userModel.findOneAndUpdate({username: username},{coins: newCoins});
+  await userModel.findOneAndUpdate({username: username},{wins: newWins});
+  await userModel.findOneAndUpdate({username: username},{losses: newLosses});
+  return await userModel.findOne({ username: username });
+}
 exports.getUsers = getUsers;
 exports.findUserById = findUserById;
+<<<<<<< HEAD
 exports.addUser = addUser;
 exports.deleteUser = deleteUser;
+=======
+exports.add = addUser;
+exports.deleteUser = deleteUser;
+exports.findUserByUsername = findUserByUsername;
+exports.findUserByUid = findUserByUid;
+exports.createUser = createUser;
+exports.updateCoins = updateCoins;
+exports.setCoins = setCoins;
+exports.win = win;
+>>>>>>> main

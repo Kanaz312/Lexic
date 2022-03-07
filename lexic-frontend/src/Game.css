@@ -1,0 +1,31 @@
+.letter {
+  width: 3vw;
+  height: 3vw;
+  background-color: burlywood;
+  border: 1px solid black;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  text-transform: capitalize;
+  margin-top: 1vh;
+  margin-right: 1vw;
+}
+
+.guesses{
+  width: 20%;
+  height: 100%;
+  display: flex;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.guessInput{
+  text-align: center;
+  display: flex;
+}
+
+.guessInputContainer{
+  padding-top: 5vh;
+  justify-content: center;
+  display: flex;
+}
