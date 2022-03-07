@@ -141,6 +141,7 @@ app.patch("/users", async (req, res) => {
   const userFound = await userServices.win(user.username, gameResult.bet, gameResult.win);
   if (userFound.username === undefined)res.status(404).send("Resource not found."); 
   else res.status(204).end();
+});
 
 // authenticates and checks if accounts exists
 async function authAndCheckExistence(req) {
