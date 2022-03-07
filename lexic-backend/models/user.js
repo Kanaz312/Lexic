@@ -10,9 +10,10 @@ const UserSchema = new mongoose.Schema({
       type: String,
       required: false,
       trim: false
+    },
     password: {
       type: String,
-      required: true,
+      required: false,
       trim: true,
     },
     coins: {

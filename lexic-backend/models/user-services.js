@@ -96,7 +96,7 @@ async function findUserByUid(uid) {
 
 async function findUserByJob(job) {
   return await userModel.find({ job: job });
-
+}
 async function deleteUser(id) {
   return await userModel.deleteByUsername(id);
 
@@ -132,9 +132,6 @@ async function win(username,value,win) {
   await userModel.findOneAndUpdate({username: username},{losses: newLosses});
   return await userModel.find({ username: username });
 }
-
-
-
 exports.getUsers = getUsers;
 exports.findUserById = findUserById;
 exports.add = addUser;
