@@ -3,8 +3,8 @@ import './Game.css';
 import axios from 'axios';
 import './checkGuess';
 import { handleGuess, unguessedLetter } from './checkGuess';
-//const dotenv = require("dotenv");
-//dotenv.config();
+import Userfront from '@userfront/react';
+import {createAuthHeader, getUserName} from './UserFrontUtils';
 
 const colors = ['red', 'orange', 'green', 'burlywood'];
 const defaultNumGuesses = 5;
@@ -56,7 +56,9 @@ function Game(props) {
 
   async function makePatchCall(body) {
     try {
-      const response = await axios.patch('https://lexic-backend.herokuapp.com' + '/users', body);
+      const config = await createAuthHeader();
+      body['Name'] =  Userfront.user['name'];
+      const response = await axios.patch('https://lexic-backend.herokuapp.com' + '/users', body, config);
       return response;
     }
     catch(error) {
@@ -90,8 +92,11 @@ function Game(props) {
     setGuess(value);
   }
 
-  const validateWord = async (word) => {
-    const response = await axios.get('https://lexic-backend.herokuapp.com' + `/guess/${word}`);
+  async function validateWord(word) {
+    const config = await createAuthHeader();
+    console.log('config in guess is:', config);
+    const name = await getUserName();
+    const response = await axios.get('https://lexic-backend.herokuapp.com' + `/guess/${word}/${name}`, config);
     return response.data;
   }
 
@@ -100,6 +105,7 @@ function Game(props) {
     result: {bet: bet, win: win},
    };
    const response = await makePatchCall(data);
+   console.log(response);
   } 
 
   const guessWord = async() => {
