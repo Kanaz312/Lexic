@@ -11,12 +11,12 @@ const textByLine = allowedWords.split('\n');
 // allow_ref['abacus'] = 1
 // allow_ref['not_int_list'] = undefined
 const allow_ref = textByLine.reduce(function(obj, v) {
-  obj[v] = 1;
+  obj[v.trim()] = 1;
   return obj;
 }, {});
 
 async function isValidWord(word) {
-  return allow_ref[word] === 1;
+  return allow_ref[word] == 1;
 }
 
 // Add mongdb user services
@@ -33,10 +33,21 @@ app.get("/", (req, res) => {
   res.send("Hello World!");
 });
 
-app.get("/guess/:word", async (req, res) => {
-  const word = req.params["word"];
+// AUTHENTICATION HERE
+app.get("/guess/", async (req, res) => {
+  console.log('initial req body', req.body);
+  console.log('initial headers', req.headers);
+  console.log('params', req.params);
+  const userInfo = await authAndCheckExistence(req);
+  // username
+  const userName = req.body['Name'];
+  // uuid
+  const uuid = userInfo['userUuid'];
+  const word = req.body['word'];
   let result = await isValidWord(word);
-    res.send(result);
+  console.log('userinfo:', userInfo);
+  console.log('guess received with word, uuid, userName, and result:', word, uuid, userName, result);
+  res.send(result);
 });
 
 app.get("/users", async (req, res) => {
@@ -133,11 +144,20 @@ app.patch("/users/:id", async (req, res) => {
     res.status(500).send("An error ocurred in the server.");
 });
 
+// PATCH
 app.patch("/users", async (req, res) => {
+  const userInfo = await authAndCheckExistence(req);
+  if (!userInfo) res.status(403).send('Auth Header is either missing or invalid!'); 
   const body = req.body;
+  // username
+  const userName = body['Name'];
+  // uuid
+  const uuid = userInfo['userUuid'];
   const user = body.user;
   const gameResult = body.result;
+  console.log('patch request received with uuid and userName', uuid, userName);
   //user.uuid verification
+  // win should probably use the uuid and not the username
   const userFound = await userServices.win(user.username, gameResult.bet, gameResult.win);
   if (userFound.username === undefined)res.status(404).send("Resource not found."); 
   else res.status(204).end();
@@ -173,8 +193,8 @@ async function authenticateToken(req) {
   if (token == null) return false;
   // console.log('\n\nUSERFRONT PUB KEY:', process.env.USERFRONT_PUBLIC_KEY);
   return jwt.verify(token, process.env.USERFRONT_PUBLIC_KEY, (err, auth) => {
-    // console.log('\nauth is:', auth);
-    // console.log('error: ', err);    
+    console.log('\nauth is:', auth);
+    console.log('error: ', err);    
     if (err) return false;
     return auth;
   });
