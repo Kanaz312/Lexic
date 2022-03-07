@@ -43,6 +43,7 @@ function GuessHistory(props) {
 function Game(props) {
   const gameState = JSON.parse(localStorage.getItem('gameState')) || {
     words: Array(defaultNumGuesses).fill(' '.repeat(3)),
+    bet: 0,
     numGuesses: defaultNumGuesses,
     guessIndex: 0,
     guessStates: Array(defaultNumGuesses).fill(Array(3).fill(unguessedLetter)),
@@ -51,12 +52,24 @@ function Game(props) {
 
   const [guess, setGuess] = useState('');
 
+  async function makePatchCall(body) {
+    try {
+      const response = await axios.patch('http://localhost:1000/users', body);
+      return response;
+    }
+    catch(error) {
+      console.log(error);
+      return false;
+    }
+  }
+
   const updateChallenge = async () => {
     // only try to update the challenge if it has not been found already
     if (Object.keys(gameState.challenge).length === 0){
       const response = {"data":{"word" : "racket", "numGuesses" : 6, "bet" : 40, "from" : "Lexic", "to" : "all"}};
       const data = response.data;
       gameState.numGuesses = data.numGuesses;
+      gameState.bet = data.bet;
       const wordLen = data.word.length;
       gameState.words = Array(gameState.numGuesses).fill(' '.repeat(wordLen));
       gameState.challenge = data;
@@ -80,18 +93,36 @@ function Game(props) {
     return response.data;
   }
 
+  async function sendResults(userName, bet, win){
+    const data = {user: {username: userName},
+    result: {bet: bet, win: win},
+   };
+   const response = await makePatchCall(data);
+  } 
+
   const guessWord = async() => {
     const index = gameState.guessIndex;
     gameState.words[index] = guess;
     if (gameState.challenge.word.length === guess.length
       && await validateWord(guess)){
       var guessState = handleGuess(guess, gameState.challenge.word);
+      // game won
+      if (guessState.reduce((previousState, state, index, array)=>{return previousState && (state === 2);}, true)){
+        // hardcoded name
+        await sendResults('Mitchell', gameState.challenge.bet, true);
+        console.log('correct word');
+        return;
+      }
       gameState.guessStates[index] = guessState;
       gameState.guessIndex = index + 1;
       localStorage.setItem('gameState', JSON.stringify(gameState));
+      // game lost
       if (gameState.guessIndex >= gameState.numGuesses) {
+        // hardcoded name
+        await sendResults('Mitchell', gameState.challenge.bet, false);
         gameState.challenge = {};
         localStorage.removeItem('gameState');
+        console.log('ran out of guesses');
         window.location.reload();
       }
       setGuess('');

@@ -33,7 +33,6 @@ app.get("/", (req, res) => {
 });
 
 app.get("/guess/:word", async (req, res) => {
-  console.log(req.params);
   const word = req.params["word"];
   let result = await isValidWord(word);
     res.send(result);
@@ -123,6 +122,16 @@ app.patch("/users/:id", async (req, res) => {
   else if (result === 404) res.status(404).send("Resource not found.");
   else if (result === 500)
     res.status(500).send("An error ocurred in the server.");
+});
+
+app.patch("/users", async (req, res) => {
+  const body = req.body;
+  const user = body.user;
+  const gameResult = body.result;
+  //user.uuid verification
+  const userFound = await userServices.win(user.username, gameResult.bet, gameResult.win);
+  if (userFound.username === undefined)res.status(404).send("Resource not found."); 
+  else res.status(204).end();
 });
 
 async function updateUser(id, updatedUser) {
