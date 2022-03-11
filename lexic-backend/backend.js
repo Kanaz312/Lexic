@@ -77,12 +77,12 @@ async function authenticateToken(req) {
 }
 
 // authenticates and checks if accounts exists
-async function authAndCheckExistence(req) {
-  const auth = await authenticateToken(req);
-  if (!auth) {
+async function authAndCheckExistence(req, username) {
+  auth = await authenticateToken(req);
+  if(!auth) {
     return false;
   }
-  await checkAccExists(req.body.Name, auth.userUuid);
+  await checkAccExists(username, auth['userUuid']);
   return auth;
 }
 
@@ -105,12 +105,33 @@ app.get('/', (req, res) => {
   res.send('Hello World!');
 });
 
+var randomProperty = function (obj) {
+  var keys = Object.keys(obj);
+  return keys[ keys.length * Math.random() << 0];
+};
+
+async function getRandomWord() {
+  while(true) {
+    let cand = randomProperty(allow_ref);
+    console.log(cand)
+    if (cand.length < 7 && cand.length > 3) {
+      return cand;
+    }
+  }
+}
+
+app.get("/word", async (req, res) => {
+  const userInfo = await authAndCheckExistence(req, req.headers.name);
+  if (!userInfo) res.status(403).send('Auth Header is either missing or invalid!');
+  res.send(await getRandomWord());
+});
+
 // AUTHENTICATION HERE
 app.get('/guess/:word/:name', async (req, res) => {
   console.log('initial req body', req.body);
   console.log('initial headers', req.headers);
   console.log('params', req.params);
-  const userInfo = await authAndCheckExistence(req);
+  const userInfo = await authAndCheckExistence(req, req.params['Name']);
   if (!userInfo) res.status(403).send('Auth Header is either missing or invalid!');
   // uuid
   const uuid = userInfo.userUuid;
@@ -191,28 +212,58 @@ app.patch('/users/:id', async (req, res) => {
 });
 
 // PATCH
-app.patch('/users', async (req, res) => {
-  const userInfo = await authAndCheckExistence(req);
-  if (!userInfo) res.status(403).send('Auth Header is either missing or invalid!');
-  const { body } = req;
+app.patch("/users", async (req, res) => {
+  const userInfo = await authAndCheckExistence(req, req.body['Name']);
+  console.log('received patch request with params', req.body['Name']);
+  if (!userInfo) res.status(403).send('Auth Header is either missing or invalid!'); 
+  const body = req.body;
   // username
   const userName = body.Name;
   // uuid
-  const uuid = userInfo.userUuid;
-  const { user } = body;
-  const gameResult = body.result;
-  console.log('patch request received with uuid and userName', uuid, userName);
-  // user.uuid verification
+  const uuid = userInfo['userUuid'];
+  const user = body.user;
+  const gameResult = body['win'];
+  console.log('patch request received with uuid and userName and result', uuid, userName, gameResult);
+  //user.uuid verification
   // win should probably use the uuid and not the username
-  const userFound = await userServices.win(user.username, gameResult.bet, gameResult.win);
-  if (userFound.username === undefined)res.status(404).send('Resource not found.');
+  const userFound = await userServices.win(uuid, gameResult);
+  if (userFound.username === undefined)res.status(404).send("Resource not found."); 
   else res.status(204).end();
 });
+
+
+
+// creates new account if one doesn't exist
+async function checkAccExists(name, uid) {
+  const accExists = await findUserByUid(uid);
+  if (!accExists) {
+    console.log('adding new user with name and id', name, uid);
+    await addNewUser(name, uid);
+    // console.log('added new user');
+  }
+  // console.log('verified successfully');
+}
+
+// given a request, returns the decrypted authentication token
+async function authenticateToken(req) {
+  const authHeader = req.headers['authorization'];
+  // console.log('authentication header is:', authHeader);
+  const token = authHeader && authHeader.split(' ')[1];
+  // console.log('token is:', token);
+  if (token == null) return false;
+  // console.log('\n\nUSERFRONT PUB KEY:', process.env.USERFRONT_PUBLIC_KEY);
+  return jwt.verify(token, process.env.USERFRONT_PUBLIC_KEY, (err, auth) => {
+    console.log('\nauth is:', auth);
+    console.log('error: ', err);    
+    if (err) return false;
+    return auth;
+  });
+}
 
 // EXAMPLE
 app.post('/test', async (req, res) => {
   // console.log('hit test endpoint');
-  const userInfo = await authAndCheckExistence(req);
+  const userInfo = await authAndCheckExistence(req, req.body['Name']);
   // console.log('userID query: ', await findUserByUid('asdl;fkjsldkfjsldkjfs'));
   // console.log('userinfo is: ', userInfo);
   if (!userInfo) {
@@ -227,7 +278,28 @@ app.post('/test', async (req, res) => {
   res.status(200).send('valid stuff received');
 });
 
-// Listen to port
+app.get('/user-profile', async (req, res) => {
+  const userInfo = await authAndCheckExistence(req, req.headers.name);
+  if (!userInfo) {
+    res.status(403).send('Auth Header is either missing or invalid!').end();
+    return;
+  }
+  const uuid = userInfo['userUuid'];
+  const user = await findUserByUid(uuid);
+  res.status(200).send(user);
+});
+
+async function updateUser(id, updatedUser) {
+  try {
+    const result = await userModel.findByIdAndUpdate(id, updatedUser);
+    if (result) return 204;
+    else return 404;
+  } catch (error) {
+    console.log(error);
+    return 500;
+  }
+}
+
 app.listen(process.env.PORT || port, () => {
   console.log('REST API is listening.');
 });

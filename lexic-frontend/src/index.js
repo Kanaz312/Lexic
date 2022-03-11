@@ -1,6 +1,5 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import './index.css';
-import App from './App';
 import reportWebVitals from './reportWebVitals';
 
 import { render } from "react-dom";
@@ -18,6 +17,34 @@ import Userfront from '@userfront/react';
 import axios from 'axios';
 import Game from './Game';
 import {createAuthHeader, getUserName} from './UserFrontUtils';
+import {Grid, Typography} from '@material-ui/core';
+import randomColor from 'randomcolor';
+import Box from '@material-ui/core/Box';
+import {
+  makeStyles,
+  createTheme,
+  ThemeProvider
+} from "@material-ui/core/styles";
+import { blue, pink } from "@material-ui/core/colors";
+
+
+const useStyles = makeStyles((theme) => ({
+  margin: {
+    "& > *": {
+      margin: theme.spacing(4)
+    }
+  },
+  spacer: {
+    marginBottom: theme.spacing(10)
+  }
+}));
+
+const defaultTheme = createTheme({
+  palette: {
+    primary: blue,
+    secondary: pink
+  }
+});
 
 Userfront.init("jb7pw8rn");
 
@@ -77,14 +104,60 @@ render(
 
 
 function Dashboard() {
+  const [user, setUser] = useState('');
+
+  useEffect(() => {
+    // You need to restrict it at some point
+    // This is just dummy code and should be replaced by actual
+    if (!user) {
+      getUser();
+    }
+  });
+
   const userData = JSON.stringify(Userfront.user, null, 2);
+  const getUser = async () => {
+    let config = await createAuthHeader();
+    config.headers.name = await getUserName();
+    console.log('GETTING USERDATA WITH ', config);
+    const response = await axios.get('http://localhost:1000/user-profile', config);
+    setUser(response.data);
+  }
+
   return (
-    <div>
-      <h2>Dashboard</h2>
-      <pre>{userData}</pre>
+    <ThemeProvider theme={defaultTheme}>
+      <Grid container spacing={3}
+        alignItems="center"
+        justifyContent="center"
+        direction="column"
+        style={{ border: "1px solid blue" }}>
+        <Box>
+          <Typography color="textSecondary" variant="h2" padding={10}>
+            User Profile
+          </Typography> 
+        </Box>       
+        <Box>
+          <Typography style={{background:randomColor(), fontWeight: 600}}>
+            Name: {user['username']}
+          </Typography>
+        </Box>
+        <Box>
+          <Typography style={{background:randomColor(), fontWeight: 600}}>
+            Coins: {user['coins']}
+          </Typography>
+        </Box>
+        <Box>
+          <Typography style={{background:randomColor(), fontWeight: 600}}>
+            Wins: {user['wins']}
+          </Typography>
+        </Box>
+        <Box>
+          <Typography style={{background:randomColor(), fontWeight: 600}}>
+            Losses: {user['losses']}
+          </Typography>
+        </Box>
       <button onClick={Userfront.logout}>Logout</button>
-      <button onClick={makePostCall}>TEST</button>
-    </div>
+      </Grid>
+    </ThemeProvider>
   );
 }
 

@@ -8,6 +8,7 @@ import {createAuthHeader, getUserName} from './UserFrontUtils';
 
 const colors = ['red', 'orange', 'green', 'burlywood'];
 const defaultNumGuesses = 5;
+const guessMessages = ['Guess Wrong Length','Guess Was Not a Word'];
 
 function Word(props) {
   const letters = props.word.split('').map((letter, index) => {
@@ -53,6 +54,7 @@ function Game(props) {
   }
 
   const [guess, setGuess] = useState('');
+  const [guessValidity, setGuessValidity] = useState(0);
 
   async function makePatchCall(body) {
     try {
@@ -69,8 +71,9 @@ function Game(props) {
 
   const updateChallenge = async () => {
     // only try to update the challenge if it has not been found already
-    if (Object.keys(gameState.challenge).length === 0){
-      const response = {"data":{"word" : "racket", "numGuesses" : 6, "bet" : 40, "from" : "Lexic", "to" : "all"}};
+    if (Object.keys(gameState.challenge).length === 0) {
+      const newWord = await getRandomWord();
+      const response = {"data":{"word" : newWord, "numGuesses" : 6, "bet" : 40, "from" : "Lexic", "to" : "all"}};
       const data = response.data;
       gameState.numGuesses = data.numGuesses;
       gameState.bet = data.bet;
@@ -92,6 +95,14 @@ function Game(props) {
     setGuess(value);
   }
 
+  async function getRandomWord() {
+    let config = await createAuthHeader();
+    config.headers.name = await getUserName();
+    const response = await axios.get(`http://localhost:1000/word`, config);
+    console.log('random word is:', response.data);
+    return response.data;
+  }
+
   async function validateWord(word) {
     const config = await createAuthHeader();
     console.log('config in guess is:', config);
@@ -100,10 +111,8 @@ function Game(props) {
     return response.data;
   }
 
-  async function sendResults(userName, bet, win){
-    const data = {user: {username: userName},
-    result: {bet: bet, win: win},
-   };
+  async function sendResults(win){
+   const data = {win: win};
    const response = await makePatchCall(data);
    console.log(response);
   } 
@@ -115,10 +124,13 @@ function Game(props) {
       && await validateWord(guess)){
       var guessState = handleGuess(guess, gameState.challenge.word);
       // game won
+      console.log('word is:', gameState.challenge.word);
       if (guessState.reduce((previousState, state, index, array)=>{return previousState && (state === 2);}, true)){
         // hardcoded name
-        await sendResults('Mitchell', gameState.challenge.bet, true);
-        console.log('correct word');
+        await sendResults(true);
+        gameState.challenge = {};
+        localStorage.removeItem('gameState');
+        window.location.reload();
         return;
       }
       gameState.guessStates[index] = guessState;
@@ -126,25 +138,29 @@ function Game(props) {
       localStorage.setItem('gameState', JSON.stringify(gameState));
       // game lost
       if (gameState.guessIndex >= gameState.numGuesses) {
-        // hardcoded name
-        await sendResults('Mitchell', gameState.challenge.bet, false);
+        await sendResults(false);
         gameState.challenge = {};
         localStorage.removeItem('gameState');
         console.log('ran out of guesses');
         window.location.reload();
       }
       setGuess('');
+
+      setGuessValidity(0);
       return;
     }
+
     setGuess('');
+    if (gameState.challenge.word.length === guess.length)
+      setGuessValidity(2);
+    else
+      setGuessValidity(1);
     console.log('Invalid word');
   }
 
   function temp(){
     console.log("keydown");
   }
-
-  const guessStyle = {'resize' : 'none'};
 
   if (Object.keys(gameState.challenge).length === 0)
     return(
@@ -153,14 +169,19 @@ function Game(props) {
   else
     return(
       <>
-      <div className='guesses'>
-        <table>
-          <GuessHistory words={gameState.words} guessStates={gameState.guessStates}/>
-        </table>
-      </div>
+        <div className='guesses'>
+          <table>
+            <GuessHistory words={gameState.words} guessStates={gameState.guessStates}/>
+          </table>
+        </div>
+        <div className='invalidWordText'>
+          {guessValidity !== 0 && <h2>{guessMessages[guessValidity-1]}</h2>}
+        </div>
         <div className='guessInputContainer'>
           <form>
-            <textarea style={guessStyle} className='guessInput' value={guess} onChange={handleChange} onSubmit={temp}/>
+            <textarea style={{'resize' : 'none'}} className='guessInput' value={guess}
+              onKeyPress={(e)=> {if(e.key === 'Enter') {guessWord(); e.preventDefault();}}}
+              onChange={handleChange} onSubmit={temp}/>
             <p/>
             <input type='button' value='Submit Guess' onClick={guessWord}/>
           </form>
