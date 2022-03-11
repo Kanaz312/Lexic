@@ -40,4 +40,15 @@
   padding-top: 1vh;
   justify-content: center;
   display: flex;
+  text-align: center;
+}
+
+.d-flex {
+  display: flex!important;
+  height: 60vh;
+}
+
+.center {
+  margin: 0 auto;
+  align-self: center;
 }

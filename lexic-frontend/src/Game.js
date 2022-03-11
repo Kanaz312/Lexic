@@ -88,10 +88,10 @@ function Game(props) {
 
   useEffect(() => {
     updateChallenge();
-  }, []);
+  });
 
   function handleChange(event) {
-    const { name, value } = event.target;
+    const { value } = event.target;
     setGuess(value);
   }
 
@@ -124,9 +124,10 @@ function Game(props) {
       && await validateWord(guess)){
       var guessState = handleGuess(guess, gameState.challenge.word);
       // game won
-      console.log('word is:', gameState.challenge.word);
+      console.log(gameState.challenge.word);
       if (guessState.reduce((previousState, state, index, array)=>{return previousState && (state === 2);}, true)){
         // hardcoded name
+        alert("CONGRATS YOU WON");
         await sendResults(true);
         gameState.challenge = {};
         localStorage.removeItem('gameState');
@@ -141,7 +142,7 @@ function Game(props) {
         await sendResults(false);
         gameState.challenge = {};
         localStorage.removeItem('gameState');
-        console.log('ran out of guesses');
+        alert("SORRY YOU RAN OUT OF GUESSES. YOU LOSE");
         window.location.reload();
       }
       setGuess('');
@@ -169,11 +170,11 @@ function Game(props) {
   else
     return(
       <>
-        <div className='guesses'>
+      <div className='d-flex'>
+        <div className='center'>
           <table>
             <GuessHistory words={gameState.words} guessStates={gameState.guessStates}/>
           </table>
-        </div>
         <div className='invalidWordText'>
           {guessValidity !== 0 && <h2>{guessMessages[guessValidity-1]}</h2>}
         </div>
@@ -183,8 +184,10 @@ function Game(props) {
               onKeyPress={(e)=> {if(e.key === 'Enter') {guessWord(); e.preventDefault();}}}
               onChange={handleChange} onSubmit={temp}/>
             <p/>
-            <input type='button' value='Submit Guess' onClick={guessWord}/>
+            <input className='button' type='button' value='Submit Guess' onClick={guessWord}/>
           </form>
+        </div>
+        </div>
         </div>
       </>
     );
