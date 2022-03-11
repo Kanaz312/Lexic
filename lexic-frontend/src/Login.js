@@ -1,4 +1,3 @@
-/* eslint-disable linebreak-style */
 /* eslint-disable no-console */
 import React from 'react';
 import IconButton from '@material-ui/core/IconButton';
