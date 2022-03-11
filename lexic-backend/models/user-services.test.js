@@ -31,19 +31,20 @@ test('updateCoins(username,value) -- Success', async () => {
     const resulty = await userServices.findUserByUsername(testUserName);
     expect(resulty[0].coins).toStrictEqual(400);
 });
-test('win(username,value,win) -- Success', async () => {
-    const testUserName = "TestUser";
-    await userServices.setCoins(testUserName,500);
-    await userServices.win(testUserName,100,false);
-    const resulty = await userServices.findUserByUsername(testUserName);
-    expect(resulty[0].coins).toStrictEqual(400);
-    expect(resulty[0].wins).toStrictEqual(0);
-    expect(resulty[0].losses).toStrictEqual(1);
-    await userServices.win(testUserName,100,true);
-    const result2 = await userServices.findUserByUsername(testUserName);
-    expect(result2[0].coins).toStrictEqual(500);
-    expect(result2[0].wins).toStrictEqual(1);
-    expect(result2[0].losses).toStrictEqual(1);
+test('win(uuid,win) -- Success', async () => {
+    const testUser = "5b21f7e0-dc09-4073-81ba-89f25cf19833";
+    const usr = await userServices.findUserByUid(testUser);
+    const origCoins = usr.coins;
+    await userServices.win(testUser, false);
+    const resulty = await userServices.findUserByUid(testUser);
+    expect(resulty.coins).toStrictEqual(origCoins - 50);
+    expect(resulty.wins).toStrictEqual(0);
+    expect(resulty.losses).toStrictEqual(1);
+    await userServices.win(testUser,true);
+    const result2 = await userServices.findUserByUid(testUser);
+    expect(result2.coins).toStrictEqual(origCoins);
+    expect(result2.wins).toStrictEqual(1);
+    expect(result2.losses).toStrictEqual(1);
 });
 test('deleteUser(id) -- Success', async () => {
     const testUserName = "TestUser";

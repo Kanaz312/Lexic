@@ -96,7 +96,8 @@ function Game(props) {
   }
 
   async function getRandomWord() {
-    const config = await createAuthHeader();
+    let config = await createAuthHeader();
+    config.headers.name = await getUserName();
     const response = await axios.get(`http://localhost:1000/word`, config);
     console.log('random word is:', response.data);
     return response.data;

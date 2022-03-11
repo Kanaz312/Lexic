@@ -49,7 +49,7 @@ async function getRandomWord() {
 }
 
 app.get("/word", async (req, res) => {
-  const userInfo = await authAndCheckExistence(req);
+  const userInfo = await authAndCheckExistence(req, req.headers.name);
   if (!userInfo) res.status(403).send('Auth Header is either missing or invalid!');
   res.send(await getRandomWord());
 });
@@ -59,7 +59,7 @@ app.get("/guess/:word/:name", async (req, res) => {
   console.log('initial req body', req.body);
   console.log('initial headers', req.headers);
   console.log('params', req.params);
-  const userInfo = await authAndCheckExistence(req);
+  const userInfo = await authAndCheckExistence(req, req.params['Name']);
   if (!userInfo) res.status(403).send('Auth Header is either missing or invalid!');
   // uuid
   const uuid = userInfo['userUuid'];
@@ -167,7 +167,8 @@ app.patch("/users/:id", async (req, res) => {
 
 // PATCH
 app.patch("/users", async (req, res) => {
-  const userInfo = await authAndCheckExistence(req);
+  const userInfo = await authAndCheckExistence(req, req.body['Name']);
+  console.log('received patch request with params', req.body['Name']);
   if (!userInfo) res.status(403).send('Auth Header is either missing or invalid!'); 
   const body = req.body;
   // username
@@ -185,12 +186,12 @@ app.patch("/users", async (req, res) => {
 });
 
 // authenticates and checks if accounts exists
-async function authAndCheckExistence(req) {
+async function authAndCheckExistence(req, username) {
   auth = await authenticateToken(req);
   if(!auth) {
     return false;
   }
-  await checkAccExists(req.body['Name'], auth['userUuid']);
+  await checkAccExists(username, auth['userUuid']);
   return auth;
 }
 
@@ -224,7 +225,7 @@ async function authenticateToken(req) {
 // EXAMPLE
 app.post('/test', async (req, res) => {
   // console.log('hit test endpoint');
-  const userInfo = await authAndCheckExistence(req);
+  const userInfo = await authAndCheckExistence(req, req.body['Name']);
   // console.log('userID query: ', await findUserByUid('asdl;fkjsldkfjsldkjfs'));
   // console.log('userinfo is: ', userInfo);
   if (!userInfo) {
@@ -240,7 +241,7 @@ app.post('/test', async (req, res) => {
 });
 
 app.get('/user-profile', async (req, res) => {
-  const userInfo = await authAndCheckExistence(req);
+  const userInfo = await authAndCheckExistence(req, req.headers.name);
   if (!userInfo) {
     res.status(403).send('Auth Header is either missing or invalid!').end();
     return;
