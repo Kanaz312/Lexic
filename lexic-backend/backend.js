@@ -154,11 +154,11 @@ app.patch("/users", async (req, res) => {
   // uuid
   const uuid = userInfo['userUuid'];
   const user = body.user;
-  const gameResult = body.result;
-  console.log('patch request received with uuid and userName', uuid, userName);
+  const gameResult = body['win'];
+  console.log('patch request received with uuid and userName and result', uuid, userName, gameResult);
   //user.uuid verification
   // win should probably use the uuid and not the username
-  const userFound = await userServices.win(user.username, gameResult.bet, gameResult.win);
+  const userFound = await userServices.win(uuid, gameResult);
   if (userFound.username === undefined)res.status(404).send("Resource not found."); 
   else res.status(204).end();
 });
@@ -216,6 +216,17 @@ app.post('/test', async (req, res) => {
   // console.log("FIELD: ", userInfo['userUuid']);
   // console.log('BODY: ', body);
   res.status(200).send('valid stuff received');
+});
+
+app.get('/user-profile', async (req, res) => {
+  const userInfo = await authAndCheckExistence(req);
+  if (!userInfo) {
+    res.status(403).send('Auth Header is either missing or invalid!').end();
+    return;
+  }
+  const uuid = userInfo['userUuid'];
+  const user = await findUserByUid(uuid);
+  res.status(200).send(user);
 });
 
 async function updateUser(id, updatedUser) {

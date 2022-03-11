@@ -102,10 +102,8 @@ function Game(props) {
     return response.data;
   }
 
-  async function sendResults(userName, bet, win){
-    const data = {user: {username: userName},
-    result: {bet: bet, win: win},
-   };
+  async function sendResults(win){
+   const data = {win: win};
    const response = await makePatchCall(data);
    console.log(response);
   } 
@@ -119,7 +117,7 @@ function Game(props) {
       // game won
       if (guessState.reduce((previousState, state, index, array)=>{return previousState && (state === 2);}, true)){
         // hardcoded name
-        await sendResults('Mitchell', gameState.challenge.bet, true);
+        await sendResults(true);
         console.log('correct word');
         return;
       }
@@ -129,13 +127,14 @@ function Game(props) {
       // game lost
       if (gameState.guessIndex >= gameState.numGuesses) {
         // hardcoded name
-        await sendResults('Mitchell', gameState.challenge.bet, false);
+        await sendResults(false);
         gameState.challenge = {};
         localStorage.removeItem('gameState');
         console.log('ran out of guesses');
         window.location.reload();
       }
       setGuess('');
+
       setGuessValidity(0);
       return;
     }
