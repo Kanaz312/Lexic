@@ -33,6 +33,27 @@ app.get("/", (req, res) => {
   res.send("Hello World!");
 });
 
+var randomProperty = function (obj) {
+  var keys = Object.keys(obj);
+  return keys[ keys.length * Math.random() << 0];
+};
+
+async function getRandomWord() {
+  while(true) {
+    let cand = randomProperty(allow_ref);
+    console.log(cand)
+    if (cand.length < 7 && cand.length > 3) {
+      return cand;
+    }
+  }
+}
+
+app.get("/word", async (req, res) => {
+  const userInfo = await authAndCheckExistence(req);
+  if (!userInfo) res.status(403).send('Auth Header is either missing or invalid!');
+  res.send(await getRandomWord());
+});
+
 // AUTHENTICATION HERE
 app.get("/guess/:word/:name", async (req, res) => {
   console.log('initial req body', req.body);
