@@ -126,11 +126,14 @@ async function updateCoins(username,value) {
   return await userModel.findOneAndUpdate({username: username},{coins: newValue});
 }
 
-async function win(username,value,win) {
-  const temp = await userModel.find({ username: username });
-  var newCoins = temp[0].coins;
-  var newWins = temp[0].wins;
-  var newLosses = temp[0].losses;
+// given a uid and a boolean win - updates the number of games won / lost as well as coins for a user with the uid
+async function win(uid, win) {
+  const value = 50;
+  const temp = await findUserByUid(uid);
+  console.log("TEMP IS:", temp)
+  var newCoins = temp.coins;
+  var newWins = temp.wins;
+  var newLosses = temp.losses;
   if(win)
   {
     newCoins += value;
@@ -141,10 +144,10 @@ async function win(username,value,win) {
     newCoins -= value;
     newLosses++;
   }
-  await userModel.findOneAndUpdate({username: username},{coins: newCoins});
-  await userModel.findOneAndUpdate({username: username},{wins: newWins});
-  await userModel.findOneAndUpdate({username: username},{losses: newLosses});
-  return await userModel.findOne({ username: username });
+  await userModel.findOneAndUpdate({uid : uid},{coins: newCoins});
+  await userModel.findOneAndUpdate({uid: uid},{wins: newWins});
+  await userModel.findOneAndUpdate({uid: uid},{losses: newLosses});
+  return await userModel.findOne({ uid: uid });
 }
 exports.getUsers = getUsers;
 exports.findUserById = findUserById;

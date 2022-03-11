@@ -33,12 +33,33 @@ app.get("/", (req, res) => {
   res.send("Hello World!");
 });
 
+var randomProperty = function (obj) {
+  var keys = Object.keys(obj);
+  return keys[ keys.length * Math.random() << 0];
+};
+
+async function getRandomWord() {
+  while(true) {
+    let cand = randomProperty(allow_ref);
+    console.log(cand)
+    if (cand.length < 7 && cand.length > 3) {
+      return cand;
+    }
+  }
+}
+
+app.get("/word", async (req, res) => {
+  const userInfo = await authAndCheckExistence(req, req.headers.name);
+  if (!userInfo) res.status(403).send('Auth Header is either missing or invalid!');
+  res.send(await getRandomWord());
+});
+
 // AUTHENTICATION HERE
 app.get("/guess/:word/:name", async (req, res) => {
   console.log('initial req body', req.body);
   console.log('initial headers', req.headers);
   console.log('params', req.params);
-  const userInfo = await authAndCheckExistence(req);
+  const userInfo = await authAndCheckExistence(req, req.params['Name']);
   if (!userInfo) res.status(403).send('Auth Header is either missing or invalid!');
   // uuid
   const uuid = userInfo['userUuid'];
@@ -146,7 +167,8 @@ app.patch("/users/:id", async (req, res) => {
 
 // PATCH
 app.patch("/users", async (req, res) => {
-  const userInfo = await authAndCheckExistence(req);
+  const userInfo = await authAndCheckExistence(req, req.body['Name']);
+  console.log('received patch request with params', req.body['Name']);
   if (!userInfo) res.status(403).send('Auth Header is either missing or invalid!'); 
   const body = req.body;
   // username
@@ -154,22 +176,22 @@ app.patch("/users", async (req, res) => {
   // uuid
   const uuid = userInfo['userUuid'];
   const user = body.user;
-  const gameResult = body.result;
-  console.log('patch request received with uuid and userName', uuid, userName);
+  const gameResult = body['win'];
+  console.log('patch request received with uuid and userName and result', uuid, userName, gameResult);
   //user.uuid verification
   // win should probably use the uuid and not the username
-  const userFound = await userServices.win(user.username, gameResult.bet, gameResult.win);
+  const userFound = await userServices.win(uuid, gameResult);
   if (userFound.username === undefined)res.status(404).send("Resource not found."); 
   else res.status(204).end();
 });
 
 // authenticates and checks if accounts exists
-async function authAndCheckExistence(req) {
+async function authAndCheckExistence(req, username) {
   auth = await authenticateToken(req);
   if(!auth) {
     return false;
   }
-  await checkAccExists(req.body['Name'], auth['userUuid']);
+  await checkAccExists(username, auth['userUuid']);
   return auth;
 }
 
@@ -203,7 +225,7 @@ async function authenticateToken(req) {
 // EXAMPLE
 app.post('/test', async (req, res) => {
   // console.log('hit test endpoint');
-  const userInfo = await authAndCheckExistence(req);
+  const userInfo = await authAndCheckExistence(req, req.body['Name']);
   // console.log('userID query: ', await findUserByUid('asdl;fkjsldkfjsldkjfs'));
   // console.log('userinfo is: ', userInfo);
   if (!userInfo) {
@@ -216,6 +238,17 @@ app.post('/test', async (req, res) => {
   // console.log("FIELD: ", userInfo['userUuid']);
   // console.log('BODY: ', body);
   res.status(200).send('valid stuff received');
+});
+
+app.get('/user-profile', async (req, res) => {
+  const userInfo = await authAndCheckExistence(req, req.headers.name);
+  if (!userInfo) {
+    res.status(403).send('Auth Header is either missing or invalid!').end();
+    return;
+  }
+  const uuid = userInfo['userUuid'];
+  const user = await findUserByUid(uuid);
+  res.status(200).send(user);
 });
 
 async function updateUser(id, updatedUser) {
