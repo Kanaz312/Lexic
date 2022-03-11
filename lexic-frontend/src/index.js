@@ -29,6 +29,7 @@ import { createAuthHeader, getUserName } from './UserFrontUtils';
 import Game from './Game';
 import reportWebVitals from './reportWebVitals';
 
+
 const defaultTheme = createTheme({
   palette: {
     primary: blue,
@@ -77,6 +78,7 @@ render(
       </nav>
     </div>
     <Routes>
+
       <Route path="/" element={<PrivateRoutes />}>
         <Route path="dashboard" element={<Dashboard />} />
         <Route
@@ -91,6 +93,7 @@ render(
 )}
         />
       </Route>
+
       <Route path="/login" element={<LoginForm />} />
       <Route path="/reset-password" element={<PasswordResetForm />} />
       <Route path="/create-account" element={<SignupForm />} />
