@@ -79,7 +79,7 @@ function Game() {
     console.log('random word is:', response.data);
     return response.data;
   }
-  const updateChallenge = async () => {
+  async function updateChallenge() {
     // only try to update the challenge if it has not been found already
     if (Object.keys(gameState.challenge).length === 0) {
       const newWord = await getRandomWord();
@@ -98,7 +98,7 @@ function Game() {
       localStorage.setItem('gameState', JSON.stringify(gameState));
       window.location.reload();
     }
-  };
+  }
 
   useEffect(() => {
     updateChallenge();
