@@ -6,11 +6,6 @@ const UserSchema = new mongoose.Schema({
       required: true,
       trim: true,
     },
-<<<<<<< HEAD
-  },
-}, {collection : 'users_list'});
-
-=======
     uid : {
       type: String,
       required: false,
@@ -47,7 +42,6 @@ const UserSchema = new mongoose.Schema({
   UserSchema.statics.deleteByUsername = function(username) {
     return this.deleteOne({ username: username })
   };
->>>>>>> main
 const User = mongoose.model("User", UserSchema);
 
 
