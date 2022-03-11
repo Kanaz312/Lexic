@@ -116,8 +116,9 @@ function Dashboard() {
 
   const userData = JSON.stringify(Userfront.user, null, 2);
   const getUser = async () => {
-    const config = await createAuthHeader();
-    console.log(config);
+    let config = await createAuthHeader();
+    config.headers.name = await getUserName();
+    console.log('GETTING USERDATA WITH ', config);
     const response = await axios.get('http://localhost:1000/user-profile', config);
     setUser(response.data);
   }
@@ -155,7 +156,6 @@ function Dashboard() {
           </Typography>
         </Box>
       <button onClick={Userfront.logout}>Logout</button>
-      <button onClick={makePostCall}>TEST</button>
       </Grid>
     </ThemeProvider>
   );
