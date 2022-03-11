@@ -102,7 +102,7 @@ function Game() {
       }
     };
     updateChallenge();
-  }, []);
+  }, [gameState]);
 
   function handleChange(event) {
     const { value } = event.target;
