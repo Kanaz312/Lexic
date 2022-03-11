@@ -25,24 +25,10 @@ mongoose
   )
   .catch((error) => console.log(error));
 
-<<<<<<< HEAD
-async function getUsers(name, job) {
-    console.log("start");
-=======
 async function getUsers(username) {
->>>>>>> main
   let result;
   if (username === undefined) {
     result = await userModel.find();
-<<<<<<< HEAD
-    console.log("hello");
-    console.log(result);
-  } else if (name && !job) {
-    result = await findUserByName(name);
-  } else if (job && !name) {
-    result = await findUserByJob(job);
-=======
->>>>>>> main
   } else {
     result = await findUserByUsername(username);
   }
@@ -151,10 +137,6 @@ async function win(uid, win) {
 }
 exports.getUsers = getUsers;
 exports.findUserById = findUserById;
-<<<<<<< HEAD
-exports.addUser = addUser;
-exports.deleteUser = deleteUser;
-=======
 exports.add = addUser;
 exports.deleteUser = deleteUser;
 exports.findUserByUsername = findUserByUsername;
@@ -163,4 +145,3 @@ exports.createUser = createUser;
 exports.updateCoins = updateCoins;
 exports.setCoins = setCoins;
 exports.win = win;
->>>>>>> main
