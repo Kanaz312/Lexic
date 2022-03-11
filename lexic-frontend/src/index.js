@@ -18,9 +18,6 @@ import Userfront from '@userfront/react';
 import axios from 'axios';
 import Game from './Game';
 import {createAuthHeader, getUserName} from './UserFrontUtils';
-<<<<<<< HEAD
- 
-=======
 import {Grid, Typography} from '@material-ui/core';
 import randomColor from 'randomcolor';
 import Box from '@material-ui/core/Box';
@@ -50,7 +47,6 @@ const defaultTheme = createTheme({
   }
 });
 
->>>>>>> main
 Userfront.init("jb7pw8rn");
 
 const SignupForm = Userfront.build({
