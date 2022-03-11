@@ -1,4 +1,4 @@
-![example workflow](https://https://github.com/Kanaz312/Lexic/tree/main/.github/workflows/backend-node.js.yml/badge.svg)
+![backend workflow](https://https://github.com/Kanaz312/Lexic/tree/main/.github/workflows/backend-node.js.yml/badge.svg)<br>
 To run our app:
 
 Open two command line windows in toplevel lexic directory
