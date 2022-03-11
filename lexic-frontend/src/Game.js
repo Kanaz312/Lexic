@@ -102,7 +102,7 @@ function Game() {
 
   useEffect(() => {
     updateChallenge();
-  }, []);
+  }, [updateChallenge]);
 
   function handleChange(event) {
     const { value } = event.target;
