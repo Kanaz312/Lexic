@@ -119,7 +119,7 @@ function Dashboard() {
     let config = await createAuthHeader();
     config.headers.name = await getUserName();
     console.log('GETTING USERDATA WITH ', config);
-    const response = await axios.get('http://localhost:1000/user-profile', config);
+    const response = await axios.get('https://lexic-backend.herokuapp.com' + '/user-profile', config);
     setUser(response.data);
   }
 
@@ -172,7 +172,7 @@ async function makePostCall() {
       Name: await getUserName()
     }
     // make the post call with the body and config
-    const response = await axios.post('http://localhost:1000/test',  body, config);
+    const response = await axios.post('https://lexic-backend.herokuapp.com' + '/test',  body, config);
     console.log("RESPONSE: ", response);
     return response;
   }

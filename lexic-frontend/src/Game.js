@@ -60,7 +60,7 @@ function Game(props) {
     try {
       const config = await createAuthHeader();
       body['Name'] =  Userfront.user['name'];
-      const response = await axios.patch('http://localhost:1000/users', body, config);
+      const response = await axios.patch('https://lexic-backend.herokuapp.com' + '/users', body, config);
       return response;
     }
     catch(error) {
@@ -98,7 +98,7 @@ function Game(props) {
   async function getRandomWord() {
     let config = await createAuthHeader();
     config.headers.name = await getUserName();
-    const response = await axios.get(`http://localhost:1000/word`, config);
+    const response = await axios.get('https://lexic-backend.herokuapp.com' + `/word`, config);
     console.log('random word is:', response.data);
     return response.data;
   }
@@ -107,7 +107,7 @@ function Game(props) {
     const config = await createAuthHeader();
     console.log('config in guess is:', config);
     const name = await getUserName();
-    const response = await axios.get(`http://localhost:1000/guess/${word}/${name}`, config);
+    const response = await axios.get('https://lexic-backend.herokuapp.com' + `/guess/${word}/${name}`, config);
     return response.data;
   }
 
