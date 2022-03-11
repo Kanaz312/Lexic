@@ -29,7 +29,6 @@ import { createAuthHeader, getUserName } from './UserFrontUtils';
 import Game from './Game';
 import reportWebVitals from './reportWebVitals';
 
-
 const defaultTheme = createTheme({
   palette: {
     primary: blue,
