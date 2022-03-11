@@ -79,28 +79,29 @@ function Game() {
     console.log('random word is:', response.data);
     return response.data;
   }
-  // async function updateChallenge() {
-  //   // only try to update the challenge if it has not been found already
-  // }
 
-  useEffect(async () => {
-    if (Object.keys(gameState.challenge).length === 0) {
-      const newWord = await getRandomWord();
-      const response = {
-        data: {
-          word: newWord, numGuesses: 6, bet: 40, from: 'Lexic', to: 'all',
-        },
-      };
-      const { data } = response;
-      gameState.numGuesses = data.numGuesses;
-      gameState.bet = data.bet;
-      const wordLen = data.word.length;
-      gameState.words = Array(gameState.numGuesses).fill(' '.repeat(wordLen));
-      gameState.challenge = data;
-      gameState.guessStates = Array(data.numGuesses).fill(Array(wordLen).fill(unguessedLetter));
-      localStorage.setItem('gameState', JSON.stringify(gameState));
-      window.location.reload();
+  useEffect(() => {
+    async function updateChallenge() {
+    // only try to update the challenge if it has not been found already
+      if (Object.keys(gameState.challenge).length === 0) {
+        const newWord = await getRandomWord();
+        const response = {
+          data: {
+            word: newWord, numGuesses: 6, bet: 40, from: 'Lexic', to: 'all',
+          },
+        };
+        const { data } = response;
+        gameState.numGuesses = data.numGuesses;
+        gameState.bet = data.bet;
+        const wordLen = data.word.length;
+        gameState.words = Array(gameState.numGuesses).fill(' '.repeat(wordLen));
+        gameState.challenge = data;
+        gameState.guessStates = Array(data.numGuesses).fill(Array(wordLen).fill(unguessedLetter));
+        localStorage.setItem('gameState', JSON.stringify(gameState));
+        window.location.reload();
+      }
     }
+    updateChallenge();
   }, []);
 
   function handleChange(event) {
