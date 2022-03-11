@@ -1,4 +1,4 @@
-/* eslint-disable linebreak-style */
+/* eslint-disable no-unused-vars */
 /* eslint-disable no-console */
 /* eslint-disable no-shadow */
 /* eslint-disable react/no-array-index-key */
@@ -105,8 +105,7 @@ function Game() {
   }, []);
 
   function handleChange(event) {
-    // eslint-disable-next-line no-unused-vars
-    const { name, value } = event.target;
+    const { value } = event.target;
     setGuess(value);
   }
 
@@ -132,7 +131,6 @@ function Game() {
       const guessState = handleGuess(guess, gameState.challenge.word);
       // game won
       console.log('word is:', gameState.challenge.word);
-      // eslint-disable-next-line no-unused-vars
       if (guessState.reduce((previousState, state, index, array) => previousState
       && (state === 2), true)) {
         // hardcoded name

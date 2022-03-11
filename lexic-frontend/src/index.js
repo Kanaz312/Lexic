@@ -1,5 +1,6 @@
 /* eslint-disable no-console */
 /* eslint-disable react/button-has-type */
+/* eslint-disable react/jsx-filename-extension */
 import React, { useEffect, useState } from 'react';
 import './index.css';
 
@@ -20,7 +21,6 @@ import { Grid, Typography } from '@material-ui/core';
 import randomColor from 'randomcolor';
 import Box from '@material-ui/core/Box';
 import {
-  // makeStyles,
   createTheme,
   ThemeProvider,
 } from '@material-ui/core/styles';
@@ -28,17 +28,6 @@ import { blue, pink } from '@material-ui/core/colors';
 import { createAuthHeader, getUserName } from './UserFrontUtils';
 import Game from './Game';
 import reportWebVitals from './reportWebVitals';
-
-// const useStyles = makeStyles((theme) => ({
-//   margin: {
-//     '& > *': {
-//       margin: theme.spacing(4),
-//     },
-//   },
-//   spacer: {
-//     marginBottom: theme.spacing(10),
-//   },
-// }));
 
 const defaultTheme = createTheme({
   palette: {
@@ -65,7 +54,6 @@ function PrivateRoutes() {
   const location = useLocation();
   console.log('location is: ', location);
   return (!Userfront.accessToken())
-    // eslint-disable-next-line react/jsx-filename-extension
     ? <Navigate to="/login" replace state={{ from: location }} />
     : <Outlet />;
 }
@@ -91,7 +79,17 @@ render(
     <Routes>
       <Route path="/" element={<PrivateRoutes />}>
         <Route path="dashboard" element={<Dashboard />} />
-        <Route path="game" element={<Game />} />
+        <Route
+          path="game"
+          element={(
+            <Game style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+            />
+)}
+        />
       </Route>
       <Route path="/login" element={<LoginForm />} />
       <Route path="/reset-password" element={<PasswordResetForm />} />
@@ -119,8 +117,6 @@ function Dashboard() {
       getUser();
     }
   });
-
-  // const userData = JSON.stringify(Userfront.user, null, 2);
 
   return (
     <ThemeProvider theme={defaultTheme}>
@@ -170,26 +166,6 @@ function Dashboard() {
     </ThemeProvider>
   );
 }
-
-// sample post call utilizing authentication bearer header
-// async function makePostCall() {
-//   try {
-//     // config will always be the same
-//     const config = await createAuthHeader();
-//     // body will contain whatever data you want to submit to backend
-//     const body = {
-//       TestData: 'THIS IS TEST DATA FROM FRONTEND IN BODY',
-//       Name: await getUserName(),
-//     };
-//     // make the post call with the body and config
-//     const response = await axios.post('http://localhost:1000/test', body, config);
-//     console.log('RESPONSE: ', response);
-//     return response;
-//   } catch (error) {
-//     console.log(error);
-//     return false;
-//   }
-// }
 
 // If you want to start measuring performance in your app, pass a function
 // to log results (for example: reportWebVitals(console.log))
