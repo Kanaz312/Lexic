@@ -5,6 +5,9 @@ Lexic is envisioned to be a social puzzle game that allows players to beat their
 
 [UI PROTOTYPE](https://www.figma.com/file/Yi9zETL1zcRFMItlbBOAmx/Lexic-UI-Prototype?node-id=0%3A1) - last updated February 2, 2022
 
+[use case diagram](https://github.com/Kanaz312/Lexic/wiki/Use-Case-Diagram)
+[class diagram](https://github.com/Kanaz312/Lexic/wiki/Lexic-Class-Diagram)
+
 To run our app:
 
 Open two command line windows in toplevel lexic directory
