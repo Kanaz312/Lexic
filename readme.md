@@ -3,6 +3,8 @@
 
 Lexic is envisioned to be a social puzzle game that allows players to beat their friends in a mastermind-like word game. It uses mechanics similar to Wordle, but the words can be variable length. Currently, we have a game-loop, as well as user account creation and a profile page.
 
+[UI PROTOTYPE](https://www.figma.com/file/Yi9zETL1zcRFMItlbBOAmx/Lexic-UI-Prototype?node-id=0%3A1)
+
 To run our app:
 
 Open two command line windows in toplevel lexic directory
