@@ -36,9 +36,7 @@ const UserSchema = new mongoose.Schema({
   
   }, {collection : 'users'});
   
-  UserSchema.statics.deleteById = function(_id) {
-    return this.deleteOne({ _id: _id })
-  };
+  
   UserSchema.statics.deleteByUsername = function(username) {
     return this.deleteOne({ username: username })
   };

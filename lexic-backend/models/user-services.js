@@ -22,8 +22,8 @@ mongoose
       useNewUrlParser: true, //useFindAndModify: false,
       useUnifiedTopology: true,
     }
-  )
-  .catch((error) => console.log(error));
+  );
+  //.catch((error) => console.log(error));
 
 async function getUsers(username) {
   let result;
@@ -36,27 +36,7 @@ async function getUsers(username) {
 }
 
 async function findUserById(id) {
-  try {
     return await userModel.findById(id);
-  } catch (error) {
-    console.log(error);
-    return undefined;
-  }
-}
-
-async function addUser(user) {
-  try {
-    // default userModel
-    const userToAdd = new userModel(user);
-    // add all of the qualifications here
-    // userToadd.coins = 500
-    // adds to DB
-    const savedUser = await userToAdd.save();
-    return savedUser;
-  } catch (error) {
-    console.log(error);
-    return false;
-  }
 }
 
 async function createUser(name, uid) {
@@ -65,7 +45,7 @@ async function createUser(name, uid) {
     coins: "",
     //id: "",
  };
-  try {
+  //try {
     // default userModel
     const userToAdd = new userModel(user);
     // add all of the qualifications here
@@ -79,10 +59,10 @@ async function createUser(name, uid) {
     userToAdd.friends = [""];
     const savedUser = await userToAdd.save();
     return savedUser;
-  } catch (error) {
-    console.log(error);
-    return false;
-  }
+  //} catch (error) {
+    //console.log(error);
+    //return false;
+  //}
 }
 
 async function findUserByUsername(username) {
@@ -94,9 +74,6 @@ async function findUserByUid(uid) {
   return await userModel.findOne({ uid: uid });
 }
 
-async function findUserByJob(job) {
-  return await userModel.find({ job: job });
-}
 async function deleteUser(id) {
   return await userModel.deleteByUsername(id);
 
@@ -116,7 +93,7 @@ async function updateCoins(username,value) {
 async function win(uid, win) {
   const value = 50;
   const temp = await findUserByUid(uid);
-  console.log("TEMP IS:", temp)
+  //console.log("TEMP IS:", temp)
   var newCoins = temp.coins;
   var newWins = temp.wins;
   var newLosses = temp.losses;
@@ -137,7 +114,6 @@ async function win(uid, win) {
 }
 exports.getUsers = getUsers;
 exports.findUserById = findUserById;
-exports.add = addUser;
 exports.deleteUser = deleteUser;
 exports.findUserByUsername = findUserByUsername;
 exports.findUserByUid = findUserByUid;

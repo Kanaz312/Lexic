@@ -53,3 +53,7 @@ test('deleteUser(id) -- Success', async () => {
     const done = await userServices.deleteUser(testUserName);
     await expect(done.deletedCount).toStrictEqual(1);
 });
+test('test return users list -- Success', async () => {
+    const testy = await userServices.getUsers();
+    await expect(testy.length).toBeGreaterThan(1);
+});
