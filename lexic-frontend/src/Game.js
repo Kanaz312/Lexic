@@ -113,6 +113,7 @@ function Game(props) {
   async function sendResults(win){
    const data = {win: win};
    const response = await makePatchCall(data);
+   console.log(response);
   } 
 
   const guessWord = async() => {
