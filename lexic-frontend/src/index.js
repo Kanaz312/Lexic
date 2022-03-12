@@ -50,10 +50,9 @@ const PasswordResetForm = Userfront.build({
   toolId: 'krrbnl',
 });
 
-function PrivateRoutes() {
-  const location = useLocation();
-  console.log('location is: ', location);
-  return (!Userfront.accessToken())
+const PrivateRoutes = () => {
+  let location = useLocation();
+  return (!Userfront.accessToken()) 
     ? <Navigate to="/login" replace state={{ from: location }} />
     : <Outlet />;
 }
@@ -119,6 +118,13 @@ function Dashboard() {
       getUser();
     }
   });
+
+  const getUser = async () => {
+    let config = await createAuthHeader();
+    config.headers.name = await getUserName();
+    const response = await axios.get('http://localhost:1000/user-profile', config);
+    setUser(response.data);
+  }
 
   return (
     <ThemeProvider theme={defaultTheme}>
