@@ -10,7 +10,7 @@ npm install<br>
 npm start<br>
 
 
-Commad line B:<br>
+Command line B:<br>
 cd lexic-frontend<br>
 npm install<br>
 npm install react-router-dom --save<br>
