@@ -49,7 +49,6 @@ const PasswordResetForm = Userfront.build({
 
 const PrivateRoutes = () => {
   let location = useLocation();
-  console.log('location is: ', location);
   return (!Userfront.accessToken()) 
     ? <Navigate to="/login" replace state={{ from: location }} />
     : <Outlet />;
@@ -108,7 +107,6 @@ function Dashboard() {
   const getUser = async () => {
     let config = await createAuthHeader();
     config.headers.name = await getUserName();
-    console.log('GETTING USERDATA WITH ', config);
     const response = await axios.get('http://localhost:1000/user-profile', config);
     setUser(response.data);
   }

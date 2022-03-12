@@ -8,7 +8,7 @@ import {createAuthHeader, getUserName} from './UserFrontUtils';
 
 const colors = ['red', 'orange', 'green', 'burlywood'];
 const defaultNumGuesses = 5;
-const guessMessages = ['Guess Wrong Length','Guess Was Not a Word'];
+const guessMessages = ['Guess was the Wrong Length','Guess was not a Valid Word'];
 
 function Word(props) {
   const letters = props.word.split('').map((letter, index) => {
@@ -105,7 +105,6 @@ function Game(props) {
 
   async function validateWord(word) {
     const config = await createAuthHeader();
-    console.log('config in guess is:', config);
     const name = await getUserName();
     const response = await axios.get(`http://localhost:1000/guess/${word}/${name}`, config);
     return response.data;
@@ -114,7 +113,6 @@ function Game(props) {
   async function sendResults(win){
    const data = {win: win};
    const response = await makePatchCall(data);
-   console.log(response);
   } 
 
   const guessWord = async() => {
