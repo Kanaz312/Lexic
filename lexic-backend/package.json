@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "jest --forceExit",
+    "test": "jest --forceExit --coverage",
     "start": "export DEBUG='express:router' && node backend.js",
     "dev": "nodemon backend.js",
     "publishToHeroku": "cd ../ && git subtree push --prefix lexic-backend heroku-lexic-backend main || true"
