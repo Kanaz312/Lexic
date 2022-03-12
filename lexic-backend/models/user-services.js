@@ -1,6 +1,8 @@
-const mongoose = require("mongoose");
-const userModel = require("./user");
-const dotenv = require("dotenv");
+/* eslint-disable no-shadow */
+/* eslint-disable new-cap */
+const mongoose = require('mongoose');
+const dotenv = require('dotenv');
+const userModel = require('./user');
 
 dotenv.config();
 
@@ -9,22 +11,42 @@ dotenv.config();
 
 mongoose
   .connect(
-    "mongodb+srv://" +
-     process.env.MONGO_USER +
-     ":" +
-     process.env.MONGO_PWD +
-     "@ourcluster.mr5hf.mongodb.net/" +
-     process.env.MONGO_DB +
-      "?retryWrites=true&w=majority",
+    `mongodb+srv://${
+      process.env.MONGO_USER
+    }:${
+      process.env.MONGO_PWD
+    }@ourcluster.mr5hf.mongodb.net/${
+      process.env.MONGO_DB
+    }?retryWrites=true&w=majority`,
     // "mongodb://localhost:27017/users",
-    //"mongodb+srv://lexic:calpolylexic@ourcluster.mr5hf.mongodb.net/Lexic?retryWrites=true&w=majority",
+    // "mongodb+srv://lexic:calpolylexic@ourcluster.mr5hf.mongodb.net/Lexic?retryWrites=true&w=majority",
     {
-      useNewUrlParser: true, //useFindAndModify: false,
+      useNewUrlParser: true, // useFindAndModify: false,
       useUnifiedTopology: true,
-    }
+    },
   );
-  //.catch((error) => console.log(error));
+// .catch((error) => console.log(error));
+async function findUserByUsername(username) {
+  return userModel.find({ username });
+}
 
+async function findUserByUid(uid) {
+  return userModel.findOne({ uid });
+}
+
+async function deleteUser(id) {
+  return userModel.deleteByUsername(id);
+}
+
+async function setCoins(username, value) {
+  return userModel.findOneAndUpdate({ username }, { coins: value });
+}
+
+async function updateCoins(username, value) {
+  const temp = await userModel.find({ username });
+  const newValue = temp[0].coins + value;
+  return userModel.findOneAndUpdate({ username }, { coins: newValue });
+}
 async function getUsers(username) {
   let result;
   if (username === undefined) {
@@ -36,81 +58,55 @@ async function getUsers(username) {
 }
 
 async function findUserById(id) {
-    return await userModel.findById(id);
+  return userModel.findById(id);
 }
 
 async function createUser(name, uid) {
-  user = {
-    username: "",
-    coins: "",
-    //id: "",
- };
-  //try {
-    // default userModel
-    const userToAdd = new userModel(user);
-    // add all of the qualifications here
-    // userToadd.coins = 500
-    // adds to DB
-    userToAdd.username = name;
-    userToAdd.uid = uid;
-    userToAdd.coins = 500;
-    userToAdd.wins = 0;
-    userToAdd.losses = 0;
-    userToAdd.friends = [""];
-    const savedUser = await userToAdd.save();
-    return savedUser;
-  //} catch (error) {
-    //console.log(error);
-    //return false;
-  //}
+  const user = {
+    username: '',
+    coins: '',
+    // id: "",
+  };
+  // try {
+  // default userModel
+  const userToAdd = new userModel(user);
+  // add all of the qualifications here
+  // userToadd.coins = 500
+  // adds to DB
+  userToAdd.username = name;
+  userToAdd.uid = uid;
+  userToAdd.coins = 500;
+  userToAdd.wins = 0;
+  userToAdd.losses = 0;
+  userToAdd.friends = [''];
+  const savedUser = await userToAdd.save();
+  return savedUser;
+  // } catch (error) {
+  // console.log(error);
+  // return false;
+  // }
 }
 
-async function findUserByUsername(username) {
-  return await userModel.find({ username: username });
-}
-
-
-async function findUserByUid(uid) {
-  return await userModel.findOne({ uid: uid });
-}
-
-async function deleteUser(id) {
-  return await userModel.deleteByUsername(id);
-
-}
-
-async function setCoins(username,value) {
-  return await userModel.findOneAndUpdate({username: username},{coins: value});
-}
-
-async function updateCoins(username,value) {
-  const temp = await userModel.find({ username: username });
-  const newValue = temp[0].coins + value;
-  return await userModel.findOneAndUpdate({username: username},{coins: newValue});
-}
-
-// given a uid and a boolean win - updates the number of games won / lost as well as coins for a user with the uid
+// given a uid and a boolean win - updates the number of games won / lost
+// as well as coins for a user with the uid
 async function win(uid, win) {
   const value = 50;
   const temp = await findUserByUid(uid);
-  //console.log("TEMP IS:", temp)
-  var newCoins = temp.coins;
-  var newWins = temp.wins;
-  var newLosses = temp.losses;
-  if(win)
-  {
+  // console.log("TEMP IS:", temp)
+  let newCoins = temp.coins;
+  let newWins = temp.wins;
+  let newLosses = temp.losses;
+  if (win) {
     newCoins += value;
-    newWins++;
-  }
-  else
-  {
+    newWins += 1;
+  } else {
     newCoins -= value;
-    newLosses++;
+    newLosses += 1;
   }
-  await userModel.findOneAndUpdate({uid : uid},{coins: newCoins});
-  await userModel.findOneAndUpdate({uid: uid},{wins: newWins});
-  await userModel.findOneAndUpdate({uid: uid},{losses: newLosses});
-  return await userModel.findOne({ uid: uid });
+  await userModel.findOneAndUpdate({ uid }, { coins: newCoins });
+  await userModel.findOneAndUpdate({ uid }, { wins: newWins });
+  await userModel.findOneAndUpdate({ uid }, { losses: newLosses });
+  return userModel.findOne({ uid });
 }
 exports.getUsers = getUsers;
 exports.findUserById = findUserById;

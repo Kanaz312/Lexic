@@ -1,5 +1,4 @@
 /* eslint-disable no-console */
-// import React from 'react';
 import './App.css';
 import axios from 'axios';
 import React, { useState, useEffect } from 'react';
@@ -25,7 +24,6 @@ function App() {
 
   async function makePostCall(person) {
     try {
-      // console.log("trying it");
       const response = await axios.post('http://localhost:1000/users', person);
       return response;
     } catch (error) {
@@ -44,7 +42,6 @@ function App() {
     });
   }
 
-  // placeholder
   updateList();
 
   return (
