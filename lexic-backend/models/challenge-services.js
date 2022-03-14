@@ -1,6 +1,8 @@
-const mongoose = require("mongoose");
-const challengeModel = require("./challenge");
-const dotenv = require("dotenv");
+/* eslint-disable no-console */
+/* eslint-disable new-cap */
+const mongoose = require('mongoose');
+const dotenv = require('dotenv');
+const challengeModel = require('./challenge');
 
 dotenv.config();
 
@@ -9,21 +11,25 @@ dotenv.config();
 
 mongoose
   .connect(
-    "mongodb+srv://" +
-     process.env.MONGO_USER +
-     ":" +
-     process.env.MONGO_PWD +
-     "@ourcluster.mr5hf.mongodb.net/" +
-     process.env.MONGO_DB +
-      "?retryWrites=true&w=majority",
+    `mongodb+srv://${
+      process.env.MONGO_USER
+    }:${
+      process.env.MONGO_PWD
+    }@ourcluster.mr5hf.mongodb.net/${
+      process.env.MONGO_DB
+    }?retryWrites=true&w=majority`,
     // "mongodb://localhost:27017/users",
-    //"mongodb+srv://lexic:calpolylexic@ourcluster.mr5hf.mongodb.net/Lexic?retryWrites=true&w=majority",
+    // "mongodb+srv://lexic:calpolylexic@ourcluster.mr5hf.mongodb.net/Lexic?retryWrites=true&w=majority",
     {
-      useNewUrlParser: true, //useFindAndModify: false,
+      useNewUrlParser: true, // useFindAndModify: false,
       useUnifiedTopology: true,
-    }
+    },
   )
   .catch((error) => console.log(error));
+
+async function findChallengeByUsernameTo(name) {
+  return challengeModel.find({ to: name });
+}
 
 async function getChallenges(usernameTo) {
   let result;
@@ -55,10 +61,6 @@ async function addChallenge(challenge) {
   }
 }
 
-async function findChallengeByUsernameTo(name) {
-  return await challengeModel.find({ to: name });
-}
-
 // async function findUserByJob(job) {
 //   return await userModel.find({ job: job });
 // }
@@ -74,5 +76,5 @@ async function findChallengeByUsernameTo(name) {
 exports.getChallenges = getChallenges;
 exports.findChallengeById = findChallengeById;
 exports.addChallenge = addChallenge;
-//exports.deleteUser = deleteUser;
+// exports.deleteUser = deleteUser;
 exports.findChallengeByUsernameTo = findChallengeByUsernameTo;
